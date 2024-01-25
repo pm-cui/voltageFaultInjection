@@ -14,6 +14,7 @@
   - Initializes Pin 3 to be the output pin, with default state being low.
   - autopull = False -> Does not automatically refill the OSR with the value from the TX FIFO. This causes the PIO to wait for user input before causing the glitch.
   - Waits for user input from the main program to be written to the TX FIFO before causing the glitch.
+  - Causes GPIO to be asserted for a short amount of time before turning returning to a low state
 
 ### STM32 Nucleo-F103RB
 - Runs an infinite loop, counting from 0 to 3.
