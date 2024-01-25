@@ -20,6 +20,31 @@
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly.png
 - Outputs via USB to laptop's terminal
 
+### P&N MOSFET
+- Connection of MOSFET is akin to Pull-up/Pull-down resistors.
+- Acts as switches to power and ground the STM32.
+- Current connection schematics (in word form):
+  - 3V3 from Pico -> PS1
+  - GPIO 3 from Pico -> PG1
+  - PD1 -> STM32 AND ND1
+  - NG1 -> GPIO 3 from Pico
+  - NS -> Ground
+- When GPIO Pin 3 is OFF:
+  - P-Channel MOSFET allows current to flow from SOURCE(3V3) to DRAIN(STM) (Switch is closed)
+  - N-Channel MOSFET prevents current flow from DRAIN(STM) to SOURCE(GROUND) (Switch is opened)
+  - Power is supplied to STM32 while the switch to Ground is open. 
+- When GPIO Pin 3 is ON:
+  - P-Channel MOSFET prevents current flow from SOURCE(3V3) to DRAIN(STM) (Switch is opened)
+  - N-Channel MOSFET allows current to flow from DRAIN(STM) to SOURCE(GROUND) (Switch is closed)
+  - Power is cut to the STM32 and current flows from STM to Ground. 
+
+## Current Issues
+- With JP6 attached, STM32 is able to transmit data over to laptop via USB. However, it also connects the capacitors, leading to a slower drop in voltage to ground
+- With JP6 detached, STM32 is no longer able to transmit data over to laptop via USB. However, the drop in voltage is steeper and faster.
+- In both cases, there is a slow curve before hitting 0v. Look into capacitors schematics.
+- Perhaps transmit data from STM32 to Pico over the UART Pins.
+- Look to where are the capacitors and how to remove/ground them without affecting the usb transmit of data. 
+
 ## To Do
 ### Raspberry Pi Pico
 - Glitch timing from user input is not yet accurate as of now. Will work on it after getting a glitch correctly. For now, I have to manually change the timing of the glitch.
