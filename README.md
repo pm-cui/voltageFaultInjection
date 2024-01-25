@@ -3,6 +3,14 @@
 - Execute fault injection using the developed fault injector against different products
 - Study why some products are more susceptible to fault injections by extracting the MCU ROM code to identify possible failure points.
 
+
+## Current Goal
+- STM32 is running an infinite loop and a conditional statement that will never be reached
+- Using the Pico, conduct VFI to corrupt the data and break into the conditional statement
+- Make a terminal UI to allow users to input the frequency to run the PIO at and the duration of the glitch.
+  - Most glitches that I've seen documented usually have a duration of ~50ns +-
+   
+
 ## Progress
 ### Raspberry Pi Pico (using micropython and asm_PIO)
 - Main Program
