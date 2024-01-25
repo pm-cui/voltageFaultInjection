@@ -19,7 +19,7 @@
 ### STM32 Nucleo-F103RB
 - Runs an infinite loop, counting from 0 to 3.
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly.png
-- Outputs via USB to laptop's terminal
+- Outputs via USB to laptop's terminal (Subjected to change due to capacitors)
 
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
