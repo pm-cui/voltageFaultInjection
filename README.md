@@ -45,7 +45,7 @@
 - Perhaps transmit data from STM32 to Pico over the UART Pins.
 - Look to where are the capacitors and how to remove/ground them without affecting the usb transmit of data. 
 
-## To Do
+## To Do:
 ### Raspberry Pi Pico
 - Glitch timing from user input is not yet accurate as of now. Will work on it after getting a glitch correctly. For now, I have to manually change the timing of the glitch.
 
