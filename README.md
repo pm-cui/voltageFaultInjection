@@ -34,4 +34,4 @@
   - Press the reset button on the STM32 board
   - Send 0x7F on any one of the 3 USART pins to configure that USARTx Pins. 
   - In bootloader mode, the STM32 takes in various commands through the USARTx Pins, notably the Read Memory Command. (found in pg 15 of AN3155)
-  - Following the flowchart present on pg 16, a glitch should be sent after the byte-string is sent to STM. 
+  - Following the flowchart present on pg 16, a glitch should be sent after the byte-string is sent to STM to skip the Read Protection and cause it to dump specified blocks of memory. 
