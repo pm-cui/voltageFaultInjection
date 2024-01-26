@@ -29,9 +29,9 @@
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly.png
 - Outputs via USB to laptop's terminal (Subjected to change due to capacitors)
 - JP5's Jumper to connect the 2 leftmost Pins. This causes the ST-Link component to not be powered and the board can then operate in 3v3. 
-- JP6 connects the power supply to the MCU (U5). Removing jumper from JP6 will result in the MCU to turn off(?).
-- When JP6 is removed, STM stops transmitting data.
-- However, if JP6 is connected, the capacitors will release charge when the STM is turned off, causing the voltage drop to be affected
+- JP6 connects the power supply to the MCU (U5). Removing jumper from JP6 will result in the MCU to turn off.
+- Therefore, I removed the jumper and directly connected the 3v3 directly to the Pin leading to the MCU. However there are issues. (Stated below)
+- STM is still able to transmit over to laptop 
 
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
@@ -52,11 +52,8 @@
   - Power is cut to the STM32 and current flows from STM to Ground. 
 
 ## Current Issues
-- With JP6 attached, STM32 is able to transmit data over to laptop via USB. However, it also connects the capacitors, leading to a slower drop in voltage to ground
-- With JP6 detached, STM32 is no longer able to transmit data over to laptop via USB. However, the drop in voltage is steeper and faster.
-- In both cases, there is a slow curve before hitting 0v. Look into capacitors schematics.
-- Perhaps transmit data from STM32 to Pico over the UART Pins.
-- Look to where are the capacitors and how to remove/ground them without affecting the usb transmit of data. 
+- Looking at the schematics, JP6 connects the 3v3 output to the MCU. Therefore, I directly connected the 3v3 to the Pin leading to the MCU
+- However, Pin 32 on the MCU is not receiving power even though Pins 64, 48, 19 are all receiving power correctly. As a result, I am not able to transmit data via UART but I am able to transmit data via USB
 
 ## To Do:
 ### Raspberry Pi Pico
