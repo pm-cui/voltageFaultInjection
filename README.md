@@ -75,7 +75,7 @@
 
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
-- Currently after looking at the documentation for the STM32 (needs to verify if its correct):
+- Currently after looking at the documentation for the STM32:
   - Boot0 Pin should be set to 1, Boot1 Pin should be set to 0. This pattern will enable bootloader mode. (found in pg 75 of AN2606)
   - Press the reset button on the STM32 board
   - Send 0x7F on any one of the 3 USART pins to configure that USARTx Pins. 
