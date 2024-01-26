@@ -14,7 +14,7 @@
 ## Progress
 ### Raspberry Pi Pico (using micropython and asm_PIO)
 - Main Program
-  - Prompt user to input the frequency of the State Machine (once at the start of the program)
+  - Prompt user to input the frequency of the State Machine (once at the start of the program). Might changed this to make the Pico run at a standard 100Mhz later on.
   - After getting a valid input, runs the State Machine. (refer to PIO)
   - Prompts user to input the duration of the glitch (Repeated)
   
@@ -31,7 +31,7 @@
 - JP5's Jumper to connect the 2 leftmost Pins. This causes the ST-Link component to not be powered and the board can then operate in 3v3. 
 - JP6 connects the power supply to the MCU (U5). Removing jumper from JP6 will result in the MCU to turn off.
 - Therefore, I removed the jumper and directly connected the 3v3 directly to the Pin leading to the MCU. However there are issues. (Stated below)
-- STM is still able to transmit over to laptop 
+- STM is still able to transmit over to laptop
 
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
@@ -53,16 +53,25 @@
 
 ## Current Issues
 - Looking at the schematics, JP6 connects the 3v3 output to the MCU. Therefore, I directly connected the 3v3 to the Pin leading to the MCU
-- However, Pin 32 on the MCU is not receiving power even though Pins 64, 48, 19 are all receiving power correctly. As a result, I am not able to transmit data via UART but I am able to transmit data via USB
+- When STM is not connected to the laptop:
+  - Pin 32 on the MCU is not receiving power even though Pins 64, 48, 19 are all receiving power correctly.
+  - Tx/Rx of data does not work from STM to Pico
+- When STM is connected to the laptop:
+  - Able to transmit data properly
+- When running the program, the 3v3 output from the Pico becomes very noisy.
+- When inducing the voltage drop, there has an initial sharp decrease followed by a much slower curve to 0v.
+  - Likely due to the presence of capacitors. Consider desoldering them from the STM board?
+  - Right now, the voltage drop is taking microseconds, which is too long)
 
 ## To Do:
 ### Raspberry Pi Pico
 - Glitch timing from user input is not yet accurate as of now. Will work on it after getting a glitch correctly. For now, I have to manually change the timing of the glitch.
 - Probably will have to run some calculations on how many cycles the GPIO Pins should be asserted for
+- Nested for loop is available. 4 Registers can be used: OSR, ISR, x, y
 
 ### STM32 Nucleo-F103RB
-- Study the schematics and figure out the connections to the MOSFET for dropping the voltage.
 - Figure out the locations of the capacitors and consider removing them
+- Desolder or look into ways to bypass the capacitors on the STM to induce a much faster voltage drop. 
 
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
