@@ -29,7 +29,7 @@
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly.png
 - Outputs via USB to laptop's terminal (Subjected to change due to capacitors)
 - JP5's Jumper to connect the 2 leftmost Pins.
-- JP6 to be removed
+- JP6 is connected to SB2, which connects to the ST-Link components with capacitors. Therefore, JP6 needs to be removed to prevent capacitors from releasing their charge and affecting VFI 
 
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
