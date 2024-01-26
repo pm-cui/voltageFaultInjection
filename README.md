@@ -70,10 +70,14 @@
 - Glitch timing from user input is not yet accurate as of now. Will work on it after getting a glitch correctly. For now, I have to manually change the timing of the glitch.
 - Probably will have to run some calculations on how many cycles the GPIO Pins should be asserted for
 - Nested for loop is available. 4 Registers can be used: OSR, ISR, x, y
+- Implement a 1s delay between glitches by using pull(asm), sm.put(), time.sleep. 
 
 ### STM32 Nucleo-F103RB
 - Figure out the locations of the capacitors and consider removing them
 - Desolder or look into ways to bypass the capacitors on the STM to induce a much faster voltage drop. 
+
+### MOFSET
+- Verify if the connections are correct
 
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
