@@ -58,10 +58,13 @@
   - Tx/Rx of data does not work from STM to Pico
 - When STM is connected to the laptop:
   - Able to transmit data properly
-- When running the program, the 3v3 output from the Pico becomes very noisy.
-- When inducing the voltage drop, there has an initial sharp decrease followed by a much slower curve to 0v.
-  - Likely due to the presence of capacitors. Consider desoldering them from the STM board?
-  - Right now, the voltage drop is taking microseconds, which is too long)
+- When inducing the voltage drop, results are as listed below:
+  - Standalone, not connected:-
+    - ~100ns rise/fall time 
+  - Connected to STM on JP6's Pin:-
+    - Steep drop followed by a slow curve. Total time for voltage drop is approximately 5 microseconds. 
+    - Likely due to the presence of capacitors. Consider desoldering them from the STM board?
+- In the paper Shaping the Glitch, their drop was only took ~50ns. The total glitch time was approximately 200ns. 
 
 ## To Do:
 ### Raspberry Pi Pico
