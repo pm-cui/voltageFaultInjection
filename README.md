@@ -28,8 +28,10 @@
 - Runs an infinite loop, counting from 0 to 3.
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly.png
 - Outputs via USB to laptop's terminal (Subjected to change due to capacitors)
-- JP5's Jumper to connect the 2 leftmost Pins.
-- JP6 is connected to SB2, which connects to the ST-Link components with capacitors. Therefore, JP6 needs to be removed to prevent capacitors from releasing their charge and affecting VFI 
+- JP5's Jumper to connect the 2 leftmost Pins. This causes the ST-Link component to not be powered and the board can then operate in 3v3. 
+- JP6 connects the power supply to the MCU (U5). Removing jumper from JP6 will result in the MCU to turn off(?).
+- When JP6 is removed, STM stops transmitting data.
+- However, if JP6 is connected, the capacitors will release charge when the STM is turned off, causing the voltage drop to be affected
 
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
