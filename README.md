@@ -25,7 +25,8 @@
 
 ### STM32 Nucleo-F103RB
 - Runs an infinite loop, counting from 0 to 3.
-- Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly.png
+- Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder. 
+- Manipulation of register values is also present in the STM32_Disassembly folder.
 - Outputs via USB to laptop's terminal (Subjected to change due to capacitors)
 - JP5's Jumper to connect the 2 leftmost Pins. This causes the ST-Link component to not be powered and the board can then operate in 3v3. 
 - JP6 connects the power supply to the MCU (U5). Removing jumper from JP6 will result in the MCU to turn off.
@@ -48,23 +49,46 @@
 - When GPIO Pin 3 is ON:
   - P-Channel MOSFET prevents current flow from SOURCE(3V3) to DRAIN(STM) (Switch is opened)
   - N-Channel MOSFET allows current to flow from DRAIN(STM) to SOURCE(GROUND) (Switch is closed)
-  - Power is cut to the STM32 and current flows from STM to Ground. 
+  - Power is cut to the STM32 and current flows from STM to Ground.
+ 
+### Driver MOSFET
+- Acts as a Pull-up Resistor.
+- When Pin 3's output is 0, Driver MOSFET's Gate is open and voltage is supplied to PG1 and NG1. P-Channel MOSFET is opened and no voltage is supplied to STM.
+- When Pin 3's output is 1, Driver MOSFET's Gate is closed and causes the circuit to short to GRD, causing PG1 and NG1 to not be powered. P-channel MOSFET is closed and N-Channel MOSFET is opened and voltage is supplied to STM.
 
 ## Current Issues
-- When STM is not connected to the laptop:
+- When STM is not connected to the laptop via ST-Link:
   - Pin 32 on the MCU is not receiving power even though Pins 64, 48, 19 are all receiving power correctly.
   - Tx/Rx of data does not work from STM to Pico
+  - STM's GPIO also does not work
+  - USB Adaptor also does not work
+    
 - When STM is connected to the laptop:
   - Able to transmit data properly
-- USB Adaptor also doesn't work
+  - GPIO works
 
-- When inducing the voltage drop, results are as listed below:
-  - Standalone, not connected:-
-    - ~100ns rise/fall time 
-  - Connected to STM on JP6's Pin:-
-    - Steep drop followed by a slow curve. Total time for voltage drop is approximately 5 microseconds. 
-    - Likely due to the presence of capacitors. Consider desoldering them from the STM board?
-- In the paper Shaping the Glitch, their drop was only took ~50ns. The total glitch time was approximately 200ns. 
+## Results of Current Setup
+- Note: In the paper Shaping the Glitch, their drop was only took ~50ns. The total glitch time was approximately 200ns.
+  
+### No driver MOSFET, not connected to STM
+- Rise time: ~100ns, Fall time: ~100ns
+
+### Driver MOSFET, Not connected to PG1 and NG1, using 220 Ohms resistor
+- Rise time: ~50ns, Fall time: ~20ns
+
+### Driver MOSFET, Not connected to PG1 and NG1, using 10k Ohms resistor
+- Rise time: ~2 microseconds, Fall time: ~20ns
+
+### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor
+- Rise time: ~1.5 microseconds, Fall time: ~150ns
+
+### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to STM32's JP6
+- Rise time: ~6 microseconds, Fall time: ~6 microseconds
+
+### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to STM32's JP6 w ST-Link connected to laptop
+- Rise time: ~10 microseconds, Fall time: ~10 microseconds
+
+
 
 ## To Do:
 ### Raspberry Pi Pico
