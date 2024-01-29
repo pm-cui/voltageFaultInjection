@@ -51,12 +51,13 @@
   - Power is cut to the STM32 and current flows from STM to Ground. 
 
 ## Current Issues
-- Looking at the schematics, JP6 connects the 3v3 output to the MCU. Therefore, I directly connected the 3v3 to the Pin leading to the MCU
 - When STM is not connected to the laptop:
   - Pin 32 on the MCU is not receiving power even though Pins 64, 48, 19 are all receiving power correctly.
   - Tx/Rx of data does not work from STM to Pico
 - When STM is connected to the laptop:
   - Able to transmit data properly
+- USB Adaptor also doesn't work
+
 - When inducing the voltage drop, results are as listed below:
   - Standalone, not connected:-
     - ~100ns rise/fall time 
