@@ -40,18 +40,19 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
-UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 uint8_t tx_buffer[30];
+uint8_t rx_buffer[30];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-static void MX_USART3_UART_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -90,11 +91,12 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  MX_USART3_UART_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   int ctrl, i, j;
   int flag = 0;
   sprintf(tx_buffer, "STM Starting...\n\r");
+  HAL_UART_Transmit(&huart1, tx_buffer, 30, 10);
   HAL_UART_Transmit(&huart2, tx_buffer, 30, 10);
   /* USER CODE END 2 */
 
@@ -105,12 +107,16 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
 	  ctrl = 0;
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_10);
+
 
 	  if (flag != 0){
 		  //Prints only once when first booted
 		  //Allows us to know if the STM has restarted when voltage has dropped
 		  sprintf(tx_buffer, "Inside of IF statement\n\r");
+		  HAL_UART_Transmit(&huart1, tx_buffer, 30, 10);
 		  HAL_UART_Transmit(&huart2, tx_buffer, 30, 10);
 	  }
 
@@ -119,13 +125,13 @@ int main(void)
 			  HAL_Delay(100);
 
 			  sprintf(tx_buffer, "i = %i j = %i ctrl = %i \n\r", i, j, ctrl);
+			  HAL_UART_Transmit(&huart1, tx_buffer, 30, 10);
 			  HAL_UART_Transmit(&huart2, tx_buffer, 30, 10);
-			  //HAL_UART_Transmit(&huart3, tx_buffer, 30, 10);
-			  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_10);
 
 			  ctrl++;
 		  }
 	  }
+
 
   }
   /* USER CODE END 3 */
@@ -170,6 +176,39 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 115200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -199,39 +238,6 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
-
-}
-
-/**
-  * @brief USART3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART3_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART3_Init 0 */
-
-  /* USER CODE END USART3_Init 0 */
-
-  /* USER CODE BEGIN USART3_Init 1 */
-
-  /* USER CODE END USART3_Init 1 */
-  huart3.Instance = USART3;
-  huart3.Init.BaudRate = 115200;
-  huart3.Init.WordLength = UART_WORDLENGTH_8B;
-  huart3.Init.StopBits = UART_STOPBITS_1;
-  huart3.Init.Parity = UART_PARITY_NONE;
-  huart3.Init.Mode = UART_MODE_TX_RX;
-  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART3_Init 2 */
-
-  /* USER CODE END USART3_Init 2 */
 
 }
 
