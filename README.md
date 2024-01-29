@@ -66,6 +66,9 @@
 - When STM is connected to the laptop:
   - Able to transmit data properly
   - GPIO works
+ 
+- When JP6's jumper is attached and power is supplied via 3v3, GPIO works as per normal.
+   - Can consider desolering capaitors on the side of SB2
 
 ## Results of Current Setup
 - Note: In the paper Shaping the Glitch, their drop was only took ~50ns. The total glitch time was approximately 200ns.
