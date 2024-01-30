@@ -80,20 +80,23 @@
 ### No driver MOSFET, not connected to STM
 - Rise time: ~100ns, Fall time: ~100ns
 
-### Driver MOSFET, Not connected to PG1 and NG1, using 220 Ohms resistor
+### Driver MOSFET ONLY , Not connected to PG1 and NG1, using 220 Ohms resistor
 - Rise time: ~50ns, Fall time: ~20ns
 
 ### Driver MOSFET, Not connected to PG1 and NG1, using 10k Ohms resistor
 - Rise time: ~2 microseconds, Fall time: ~20ns
 
 ### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor
-- Rise time: ~1.5 microseconds, Fall time: ~150ns
+- Rise time: ~200ns, Fall time: ~500ns
+
+### GPIO Pin Directly Connected to PG1 and NG1, using 220 Ohms resistor
+- Rise time: ~200ns, Fall time: ~200ns
 
 ### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to STM32's JP6
-- Rise time: ~6 microseconds, Fall time: ~6 microseconds
+- Rise time: ~7.5 microseconds, Fall time: ~10 microseconds
 
 ### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to 3v3 with JP6's jumper attached
-- Rise time: ~10 microseconds, Fall time: ~10 microseconds
+- Rise time: ~30 microseconds, Fall time: ~30 microseconds
 
 
 
