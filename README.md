@@ -3,6 +3,12 @@
 - Execute fault injection using the developed fault injector against different products
 - Study why some products are more susceptible to fault injections by extracting the MCU ROM code to identify possible failure points.
 
+## Nagivation
+- main.c --> STM32's main program code
+- STM32 Disassmebly Folder --> Screenshots of STM32's Disassembly window and register manipulation
+- voltage.py --> Main code for pico. Contains the main program and PIO code
+- Pico_Py folder --> Test codes for the various building blocks
+
 
 ## Current Goal
 - STM32 is running an infinite loop and a conditional statement that will never be reached
