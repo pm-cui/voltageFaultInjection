@@ -1,33 +1,44 @@
 import time, sys, uselect
-from machine import Pin
+from machine import Pin, UART
 from rp2 import PIO, asm_pio, StateMachine
 
 #Set the Gate of the MOSFET to high for a few clock cycles, causing the output to be 0v. Simulates a drop in voltage
-@asm_pio(set_init = rp2.PIO.OUT_LOW, out_shiftdir=PIO.SHIFT_RIGHT, autopull=False, pull_thresh=16)
+@asm_pio(set_init = rp2.PIO.OUT_LOW, out_shiftdir=PIO.SHIFT_RIGHT, autopull=True, pull_thresh=16)
 def drop_voltage():
-    #Waits for user input and determines the duration of the glitch
-    pull(block)
+    #Get the glitch timing from the OSR
+    pull()
     
-    #Set Pin to High
+    #Waits for Rising Edge from Pin 4 before glitching with Pin 3
+    wait(1, pin, 0)
+    
+    #Can include some waiting time before glitch occurs
+    #nop()			[1]
+    
+    #Set Pin 3 to High. Induces Glitch
     set(pins, 1)
-    mov(y, osr)
     
-    #Delay
+    #Delay. Include the proper cycles later on
     set(x, 31)
     label("delay_high_outer")
-    mov(y, osr)
+    set(y, osr)
     label("delay_high_inner")
-    nop()			
+    nop()			[31]
     jmp(y_dec, "delay_high_inner")
-    jmp(x_dec, "delay_high_outer")
+    jmp(x_dec, "delay_high_outer") 
 
     
-    #Set Pin to Low
+    #Set Pin 3 to Low. Return opertaions as per normal
     set(pins, 0)
+    #Wait for Falling edge so the PIO Does not continually glitch
+    wait(0, pin, 0)
     
-#Switches the on-board LED to ON state.
+#Switch ON the on-board LED.
 led = Pin("LED", Pin.OUT)
 led.value(1)
+
+#Initialize UART
+uart = UART(0, baudrate=115200, tx=Pin(12), rx=Pin(13))
+uart.init(bits=8, parity=None, stop=1)
 
 #Sets up the comms btw Pico and Thonny IDE
 spoll=uselect.poll()
@@ -43,22 +54,6 @@ def readline():
         buffer += c
         c = read1()
     return buffer
-
-def get_freq():
-    print("Enter Frequency (Hz): ", end = "")
-    while True:
-        freq_input = readline()
-        if len(freq_input) != 0:
-            try:
-                #PIO can run from 2000Hz to 133Mhz. Reject any other values. 
-                if (int(freq_input) < 2000 or int(freq_input) > 125000000):
-                    raise Exception
-                
-                return freq_input
-                
-            except:
-                print("Error, please enter an integer between 2000 and 125,000,000.")
-                print("Enter Frequency (Hz): ", end = "")
                 
 def get_glitch_duration():
     print("Enter glitch duration(ns): ", end = "")
@@ -73,15 +68,20 @@ def get_glitch_duration():
                 return glitch_duration
                 
             except:
-                print("Error, please enter an integer between 10 and 30.")
+                print("Error, please enter an integer between 1 and 30.")
                 print("Enter glitch duration(ns): ", end = "")
 
-frequency = get_freq()
-sm = StateMachine(0, drop_voltage, freq = int(frequency), set_base = Pin(3))
-print("Frequency: " + frequency)
+#Get user input for the glitch duration
+print("State Machine's Frequency is set to 100Mhz")
+glitch_time = get_glitch_duration()
+
+#Set up the State Machine and puts the glitch timing to the OSR of the State Machine
+sm = StateMachine(0, drop_voltage, freq = 100_000_000, set_base = Pin(3), in_base = Pin(4))
+sm.put(glitch_time)
 sm.active(1)
 
 while True:
-    glitch_time = get_glitch_duration()
-    print("Glitching...")
-    sm.put(int(glitch_time))
+    #Prints output of STM32 to Thonny IDE
+    if uart.any(): 
+        data = uart.read()
+        print(data)
