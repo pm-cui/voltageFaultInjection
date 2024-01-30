@@ -13,29 +13,27 @@
 ## Progress
 ### Raspberry Pi Pico (using micropython and asm_PIO)
 - Main Program
-  - Prompt user to input the frequency of the State Machine (once at the start of the program). Might changed this to make the Pico run at a standard 100Mhz later on.
-  - After getting a valid input, runs the State Machine. (refer to PIO)
-  - Prompts user to input the duration of the glitch (Repeated)
+  - State Machine running at a set 100Mhz
+  - Prompts user for glitch duration. Calculations to send to PIO will be added later
+  - After getting a valid input, runs the State Machine
   
 - asm_PIO
-  - Initializes Pin 3 to be the output pin, with default state being low.
-  - autopull = False -> Does not automatically refill the OSR with the value from the TX FIFO. This causes the PIO to wait for user input before causing the glitch.
-  - Waits for user input from the main program to be written to the TX FIFO before causing the glitch.
-  - Causes GPIO to be asserted for a short amount of time before turning returning to a low state
+  - Initializes Pin 3 to be the output pin, with default state being low
+  - Initializes Pin 4 to be the input pin, getting input from PA10 of the STM32
+  - Upon a rising edge detected on Pin 4, it induces a voltage glitch on Pin 3
+  - autopull = True causes the OSR to be automatically refilled with the value from the TX FIFO (user input - glitch duration)
 
 ### STM32 Nucleo-F103RB
 - Runs an infinite loop, counting from 0 to 3.
+- Toggles PA10. 
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder. 
 - Manipulation of register values is also present in the STM32_Disassembly folder.
-- Outputs via USB to laptop's terminal (Subjected to change due to capacitors)
-- JP5's Jumper to connect the 2 leftmost Pins. This causes the ST-Link component to not be powered and the board can then operate in 3v3. 
-- JP6 connects the power supply to the MCU (U5). Removing jumper from JP6 will result in the MCU to turn off.
-- Therefore, I removed the jumper and directly connected the 3v3 directly to the Pin leading to the MCU. However there are issues. (Stated below)
-- STM is still able to transmit over to laptop
+- JP5 to connect leftmost Pins (near E5V)
+- Connecting directly to JP6's Left Pin is insufficient. UART and GPIO does not work. Jumper needs to be present. (Move to issues)
 
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
-- Acts as switches to power and ground the STM32.
+- Acts as switches to power and ground the STM32
 - Current connection schematics (in word form):
   - 3V3 from Pico -> PS1
   - GPIO 3 from Pico -> PG1
@@ -57,17 +55,17 @@
 - When Pin 3's output is 1, Driver MOSFET's Gate is closed and causes the circuit to short to GRD, causing PG1 and NG1 to not be powered. P-channel MOSFET is closed and N-Channel MOSFET is opened and voltage is supplied to STM.
 
 ## Current Issues
-- When STM is not connected to the laptop via ST-Link:
-  - Pin 32 on the MCU is not receiving power even though Pins 64, 48, 19 are all receiving power correctly.
-  - Tx/Rx of data does not work from STM to Pico
-  - STM's GPIO also does not work
+- When STM32 is connected to Leftmost Pin of JP6:
+  - Pins 64, 48, 19 have a reading of 3v3 while Pin 32 has a reading of 0v when it should be showing readings. 
+  - Tx/Rx and GPIO does not work
   - USB Adaptor also does not work
     
 - When STM is connected to the laptop:
   - Able to transmit data properly
   - GPIO works
  
-- When JP6's jumper is attached and power is supplied via 3v3, GPIO works as per normal.
+- When JP6's jumper is attached and power is supplied via 3v3, GPIO works as per normal
+   - Rise and Fall time increases significantly (refer to results below)
    - Can consider desolering capaitors on the side of SB2
 
 ## Results of Current Setup
@@ -88,24 +86,27 @@
 ### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to STM32's JP6
 - Rise time: ~6 microseconds, Fall time: ~6 microseconds
 
-### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to STM32's JP6 w ST-Link connected to laptop
+### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to 3v3 with JP6's jumper attached
 - Rise time: ~10 microseconds, Fall time: ~10 microseconds
 
 
 
 ## To Do:
 ### Raspberry Pi Pico
-- Glitch timing from user input is not yet accurate as of now. Will work on it after getting a glitch correctly. For now, I have to manually change the timing of the glitch.
-- Probably will have to run some calculations on how many cycles the GPIO Pins should be asserted for
+- Add a function to convert the glitch duration in ns to number of cycles
+- Pass the values to PIO to utilize for glitching
 - Nested for loop is available. 4 Registers can be used: OSR, ISR, x, y
-- Implement a 1s delay between glitches by using pull(asm), sm.put(), time.sleep. 
+
 
 ### STM32 Nucleo-F103RB
 - Figure out the locations of the capacitors and consider removing them
-- Desolder or look into ways to bypass the capacitors on the STM to induce a much faster voltage drop. 
+- Desolder the capacitors on the STM to induce a much faster voltage drop. 
 
 ### MOFSET
-- Verify if the connections are correct
+- No changes to be made as of now.
+
+### Driver MOSFET
+- Check connections and find out why the rise and fall time increases significantly when connected to the P&N MOSFET
 
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
