@@ -34,26 +34,12 @@
 - Toggles PA10. 
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder. 
 - Manipulation of register values is also present in the STM32_Disassembly folder.
-- JP5 to connect leftmost Pins (near E5V)
-- Connecting directly to JP6's Left Pin is insufficient. UART and GPIO does not work. Jumper needs to be present. (Move to issues)
+- JP5 can be removed
+- SB12(remove connection to NRST, which was pulling down the voltage of the MCU), C23, C24, C27, C28, C29 has been removed
 
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
 - Acts as switches to power and ground the STM32
-- Current connection schematics (in word form):
-  - 3V3 from Pico -> PS1
-  - GPIO 3 from Pico -> PG1
-  - PD1 -> STM32 AND ND1
-  - NG1 -> GPIO 3 from Pico
-  - NS -> Ground
-- When GPIO Pin 3 is OFF:
-  - P-Channel MOSFET allows current to flow from SOURCE(3V3) to DRAIN(STM) (Switch is closed)
-  - N-Channel MOSFET prevents current flow from DRAIN(STM) to SOURCE(GROUND) (Switch is opened)
-  - Power is supplied to STM32 while the switch to Ground is open. 
-- When GPIO Pin 3 is ON:
-  - P-Channel MOSFET prevents current flow from SOURCE(3V3) to DRAIN(STM) (Switch is opened)
-  - N-Channel MOSFET allows current to flow from DRAIN(STM) to SOURCE(GROUND) (Switch is closed)
-  - Power is cut to the STM32 and current flows from STM to Ground.
  
 ### Driver MOSFET
 - Acts as a Pull-up Resistor.
@@ -61,18 +47,14 @@
 - When Pin 3's output is 1, Driver MOSFET's Gate is closed and causes the circuit to short to GRD, causing PG1 and NG1 to not be powered. P-channel MOSFET is closed and N-Channel MOSFET is opened and voltage is supplied to STM.
 
 ## Current Issues
-- When STM32 is connected to Leftmost Pin of JP6:
-  - Pins 64, 48, 19 have a reading of 3v3 while Pin 32 has a reading of 0v when it should be showing readings. 
-  - Tx/Rx and GPIO does not work
-  - USB Adaptor also does not work
-    
-- When STM is connected to the laptop:
-  - Able to transmit data properly
-  - GPIO works
- 
-- When JP6's jumper is attached and power is supplied via 3v3, GPIO works as per normal
-   - Rise and Fall time increases significantly (refer to results below)
-   - Can consider desolering capaitors on the side of SB2
+- Rise and Fall Time are still too long, even with the driver MOSFET Setup
+- Will test with the cut-off board and compare results to determine what the issue is
+- Circuit design verified to be correct
+- Find out the potential issues
+- Differences between cutoff board and my board:
+   - C30 removed (AVDD). 
+   - R33 removed (Boot 0). Need to connect it to ground to get out of bootloader mode
+   - SB2 removed (Connection to JP6. Should not matter to my board as removed JP6's jumper and directly connecting to its pin)   
 
 ## Results of Current Setup
 - Note: In the paper Shaping the Glitch, their drop was only took ~50ns. The total glitch time was approximately 200ns.
@@ -81,22 +63,19 @@
 - Rise time: ~100ns, Fall time: ~100ns
 
 ### Driver MOSFET ONLY , Not connected to PG1 and NG1, using 220 Ohms resistor
-- Rise time: ~50ns, Fall time: ~20ns
+- Rise time: ~50ns, Fall time: ~20ns (capacitors present)
+- Rise time: ~75ns, Fall time: ~20ns (capacitors removed)
 
 ### Driver MOSFET, Not connected to PG1 and NG1, using 10k Ohms resistor
-- Rise time: ~2 microseconds, Fall time: ~20ns
+- Rise and Fall Time increases signinficantly
 
 ### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor
-- Rise time: ~200ns, Fall time: ~500ns
+- Rise time: ~200ns, Fall time: ~500ns           (capacitors present)
+- Rise time: ~1 microsecond, Fall time: ~100ns   (capacitors removed)
 
-### GPIO Pin Directly Connected to PG1 and NG1, using 220 Ohms resistor
-- Rise time: ~200ns, Fall time: ~200ns
-
-### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to STM32's JP6
-- Rise time: ~7.5 microseconds, Fall time: ~10 microseconds
-
-### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to 3v3 with JP6's jumper attached
-- Rise time: ~30 microseconds, Fall time: ~30 microseconds
+### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to STM32
+- Rise time: ~7.5 microseconds, Fall time: ~10 microseconds (capacitors present)
+- Rise time: ~2 microseconds, Fall time: ~2.5 microseconds (capacitors removed)
 
 
 
@@ -108,14 +87,10 @@
 
 
 ### STM32 Nucleo-F103RB
-- Figure out the locations of the capacitors and consider removing them
-- Desolder the capacitors on the STM to induce a much faster voltage drop. 
+- Using the ST-Link debugger, program the cutoff board and test it
 
 ### MOFSET
 - No changes to be made as of now.
-
-### Driver MOSFET
-- Check connections and find out why the rise and fall time increases significantly when connected to the P&N MOSFET
 
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
