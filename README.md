@@ -60,6 +60,9 @@
 
 ## Current Issues
 - Rise and Fall Time are still too long, even with the driver MOSFET Setup
+- When conducting the fault injection with the current setup, voltage drop is inconsisten. THe dropped voltage ranges from apprioximately 2v to 1v
+- During the execution, tx of STM32 will sometimes stop transmitting data. Resetting it will continue its operationoving
+- Wires moving during the execution affects the results. It can cause a normal execution to continously force reset. Adjusting the wire can sometimes bring it back to normal execution.
 - ST-Link v2 is unable to read/erase the memory of the cutoff stm32 board
 - Will test with the cut-off board and compare results to determine what the issue is
 - Circuit design verified to be correct
