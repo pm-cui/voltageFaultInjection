@@ -37,6 +37,18 @@
 - JP5 can be removed
 - SB12(remove connection to NRST, which was pulling down the voltage of the MCU), C23, C24, C27, C28, C29 has been removed
 
+### STM32 Nucleo-F103RB (with ST-Link component cut off)
+- Conection to ST-Link are as follows:
+   - Boot 0 (CN7 Pin 7) to GRD
+   - 3v3 to Pico's 3v3
+   - VIN to ST-Link CN4 Pin 1
+   - CN7 Pin 15 to ST-Link CN4 Pin 2
+   - GND to ST-Link CN4 Pin 3
+   - CN7 Pin 13 to ST-Link CN4 Pin 4
+   - NRST to ST-Link CN Pin 5
+- ST-Link able to recognise the board but unable to read/erase/write the board
+- Screenshots documenting this issue is in CutOff_STM32_Issue
+
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
 - Acts as switches to power and ground the STM32
@@ -48,6 +60,7 @@
 
 ## Current Issues
 - Rise and Fall Time are still too long, even with the driver MOSFET Setup
+- ST-Link v2 is unable to read/erase the memory of the cutoff stm32 board
 - Will test with the cut-off board and compare results to determine what the issue is
 - Circuit design verified to be correct
 - Find out the potential issues
