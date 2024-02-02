@@ -13,20 +13,21 @@
 ## Current Goal
 - STM32 is running an infinite loop and a conditional statement that will never be reached
 - Using the Pico, conduct VFI to corrupt the data and break into the conditional statement
-- Make a terminal UI to allow users to input the frequency to run the PIO at and the duration of the glitch.
+- Make a terminal UI to allow users to input the duration of the glitch. 
    
 
 ## Progress
 ### Raspberry Pi Pico (using micropython and asm_PIO)
 - Main Program
   - State Machine running at a set 100Mhz
-  - Prompts user for glitch duration. Calculations to send to PIO will be added later
+  - Prompts user for glitch duration. Calculations to send the register values for delaying the PIO will be added later (take into account rise time)
   - After getting a valid input, runs the State Machine
   
 - asm_PIO
   - Initializes Pin 3 to be the output pin, with default state being low
   - Initializes Pin 4 to be the input pin, getting input from PA10 of the STM32
   - Upon a rising edge detected on Pin 4, it induces a voltage glitch on Pin 3
+     - Sets the GPIO to LOW for a short amount of time before setting it HIGH 
   - autopull = True causes the OSR to be automatically refilled with the value from the TX FIFO (user input - glitch duration)
 
 ### STM32 Nucleo-F103RB
@@ -34,8 +35,9 @@
 - Toggles PA10. 
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder. 
 - Manipulation of register values is also present in the STM32_Disassembly folder.
-- JP5 can be removed
-- SB12(remove connection to NRST, which was pulling down the voltage of the MCU), C23, C24, C27, C28, C29 has been removed
+- SB12 (remove connection to NRST, which was pulling down the voltage of the MCU), C23, C24, C27, C28, C29 has been removed. Looking to remove c30.
+- JP5 and JP6 can be removed.
+- CN2's Jumpers can be removed. Doing so allows the use of the ST-Link v2 to program other STM32 boards. 
 
 ### STM32 Nucleo-F103RB (with ST-Link component cut off)
 - Conection to ST-Link are as follows:
@@ -46,8 +48,7 @@
    - GND to ST-Link CN4 Pin 3
    - CN7 Pin 13 to ST-Link CN4 Pin 4
    - NRST to ST-Link CN Pin 5
-- ST-Link able to recognise the board but unable to read/erase/write the board
-- Screenshots documenting this issue is in CutOff_STM32_Issue
+- ST-Link able to recognise the board but unable to read/erase/write the board (see Current Issues)
 
 ### P&N MOSFET
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
@@ -58,19 +59,41 @@
 - When Pin 3's output is 0, Driver MOSFET's Gate is open and voltage is supplied to PG1 and NG1. P-Channel MOSFET is opened and no voltage is supplied to STM.
 - When Pin 3's output is 1, Driver MOSFET's Gate is closed and causes the circuit to short to GRD, causing PG1 and NG1 to not be powered. P-channel MOSFET is closed and N-Channel MOSFET is opened and voltage is supplied to STM.
 
-## Current Issues
-- Rise and Fall Time are still too long, even with the driver MOSFET Setup
-- When conducting the fault injection with the current setup, voltage drop is inconsisten. THe dropped voltage ranges from apprioximately 2v to 1v
-- During the execution, tx of STM32 will sometimes stop transmitting data. Resetting it will continue its operationoving
-- Wires moving during the execution affects the results. It can cause a normal execution to continously force reset. Adjusting the wire can sometimes bring it back to normal execution.
-- ST-Link v2 is unable to read/erase the memory of the cutoff stm32 board
-- Will test with the cut-off board and compare results to determine what the issue is
-- Circuit design verified to be correct
-- Find out the potential issues
-- Differences between cutoff board and my board:
+## Current Issues 
+
+### Oscilloscope
+- One of the probes is not getting any readings
+- Tried to replicate the settings to the working probe but unable to get it to work
+- Therefore, unable to visualize the process of:
+   - STM32 sets PA10 high
+   - Rising edge detected on Pico
+   - Pico delays before causing glitch
+
+### Fault injection initial tests
+- Rise and Fall Time are still too long, even with the driver MOSFET Setup. All 3 MOSFET that were given were tested and gave similar results
+- When conducting the fault injection with the current setup, voltage drop is inconsistent. The dropped voltage ranges from apprioximately 2v to 1v. Mainly occurs at shorter delays when the timing is too short to allow the voltage to fully drop to 0v
+- During the execution, tx of STM32 will sometimes stop transmitting data. Resetting it will continue its operation. Mainly occurs when the glitch timing is slightly below the glitch timing of when it causes the board to continually reset.
+- Wires moving during the execution affects the results. It can cause a normal execution to continously reset. Adjusting the wire can sometimes bring it back to normal execution, even with similar glitch timings, and vice versa. 
+- Looking at other documentation of VFI proved to be of little use. Most of them use specific hardware like ChipWhisperer/FPGAs or only document the use of 1 transister/ N-channel MOSFET to induce the glitch. Tested the use of only 1 MOSFET and results were far worse than that of the my current 2 MOSFET setup.
+- Graphs of key fall/rise timings are sketched out
+
+### Cutoff board 
+- ST-Link V2 is unable to read/erase/write the memory of the cutoff stm32 board as shown in the CutOff_Board_Issues folder.
+- Differences between cutoff board and non-cutoff board:
    - C30 removed (AVDD). 
    - R33 removed (Boot 0). Need to connect it to ground to get out of bootloader mode
-   - SB2 removed (Connection to JP6. Should not matter to my board as removed JP6's jumper and directly connecting to its pin)   
+   - SB2 removed (Connection to JP6. Should not matter to my board as removed JP6's jumper and directly connecting to its pin)
+- The cut-off board drops voltage faster than the non-cut off board by approximately 0.5 microseconds. Worth looking into removing c30.
+
+### Bootloader mode
+- Unable to initalize USART1
+- Looked into chipwhisper's source code to see how they sent the data: https://github.com/newaetech/chipwhisperer/blob/develop/software/chipwhisperer/hardware/naeusb/programmer_stm32fserial.py#L313
+   - Replicated the sending of bytes on line 345 of the repo above but not receiving any data
+   - Line 313 is the conditionals after receiving the ACK.
+   - Line 362 does the XORing of bits
+   - Line 412 is the read memory command
+   - Tested under an oscilloscope as well. STM32 was receiving data correctly but not transmitting the ACK or NACK as per the flowchart in the documentation
+
 
 ## Results of Current Setup
 - Note: In the paper Shaping the Glitch, their drop was only took ~50ns. The total glitch time was approximately 200ns.
@@ -93,14 +116,13 @@
 - Rise time: ~7.5 microseconds, Fall time: ~10 microseconds (capacitors present)
 - Rise time: ~2 microseconds, Fall time: ~2.5 microseconds (capacitors removed)
 
-
+- Overall drop in timings but 10k ohms resistor is still increasing the rise/fall time
 
 ## To Do:
 ### Raspberry Pi Pico
 - Add a function to convert the glitch duration in ns to number of cycles
-- Pass the values to PIO to utilize for glitching
+- Pass the values to PIO to utilize for glitching 
 - Nested for loop is available. 4 Registers can be used: OSR, ISR, x, y
-
 
 ### STM32 Nucleo-F103RB
 - Using the ST-Link debugger, program the cutoff board and test it
@@ -108,14 +130,12 @@
 ### MOFSET
 - No changes to be made as of now.
 
+### Firmware Analysis
+- Research on the basics of firmware analysis
+
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
-- Currently after looking at the documentation for the STM32:
-  - Boot0 Pin should be set to 1, Boot1 Pin should be set to 0. This pattern will enable bootloader mode. (found in pg 75 of AN2606)
-  - Press the reset button on the STM32 board
-  - Send 0x7F on any one of the 3 USART pins to configure that USARTx Pins. 
-  - In bootloader mode, the STM32 takes in various commands through the USARTx Pins, notably the Read Memory Command. (found in pg 15 of AN3155)
-  - Following the flowchart present on pg 16, a glitch should be sent after the byte-string is sent to STM to skip the Read Protection and cause it to dump specified blocks of memory.
 - As of now:
-   - Able to enter bootloader mode(?)
-   - Looking into sending data through the USART to use the Bootloader Commands. uart.write(hex(127)) (0x7F) does not work as of now
+   - Able to enter bootloader mode
+   - Looking into sending data through the USART to use the Bootloader Commands.
+- Do firmware analysis on the extracted firmware code
