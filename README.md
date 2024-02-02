@@ -132,6 +132,13 @@
 
 ### Firmware Analysis
 - Research on the basics of firmware analysis
+- Links used so far:
+   -    https://book.hacktricks.xyz/hardware-physical-access/firmware-analysis
+   -    https://www.youtube.com/watch?v=zs86OYea8Wk&t=553s
+   -    https://www.youtube.com/watch?v=hevWfbWOIew 
+   -    https://www.tarlogic.com/blog/owasp-fstm-stage-3-analyzing-firmware/
+   -    https://roman1.gitbook.io/blog/embedded-device-exploitation/introduction-to-firmware-analysis
+- Practice analyzing firmware of some open source firmware such as: Damn Vulnerable Firmware https://github.com/praetorian-inc/DVRF 
 
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
