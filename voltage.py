@@ -2,33 +2,46 @@ import time, sys, uselect
 from machine import Pin, UART
 from rp2 import PIO, asm_pio, StateMachine
 
-#Set the Gate of the MOSFET to high for a few clock cycles, causing the output to be 0v. Simulates a drop in voltage
-@asm_pio(set_init = rp2.PIO.OUT_LOW, out_shiftdir=PIO.SHIFT_RIGHT, autopull=True, pull_thresh=16)
+#Set the Gate of the Driver MOSFET to LOW for a short period. Glitches the STM32. (See sketch schematics)
+@asm_pio(set_init = rp2.PIO.OUT_HIGH, out_shiftdir=PIO.SHIFT_RIGHT, autopull=True, pull_thresh=16)
 def drop_voltage():
-    #Get the glitch timing from the OSR
+    #Get the glitch timing from the OSR (not in use right now)
     pull()
     
     #Waits for Rising Edge from Pin 4 before glitching with Pin 3
     wait(1, pin, 0)
     
     #Can include some waiting time before glitch occurs
-    #nop()			[1]
+    #nop()			[10]
     
-    #Set Pin 3 to High. Induces Glitch
-    set(pins, 1)
+    #Set Pin 3 to Low. Induces Glitch
+    set(pins, 0)
     
     #Delay. Include the proper cycles later on
+    set(x, 3)
+    label("delay_low_outer")
+    set(y, 0)
+    label("delay_low_inner")
+    nop()			[31]
+    jmp(y_dec, "delay_low_inner")
+    jmp(x_dec, "delay_low_outer")
+    
+    #in between 7-10
+    nop()	[10]
+
+    
+    #Set Pin 3 to High. Return opertaions as per normal
+    set(pins, 1)
+    
+    #Delay=
     set(x, 31)
     label("delay_high_outer")
-    set(y, osr)
+    set(y, 31)
     label("delay_high_inner")
     nop()			[31]
     jmp(y_dec, "delay_high_inner")
-    jmp(x_dec, "delay_high_outer") 
-
+    jmp(x_dec, "delay_high_outer")
     
-    #Set Pin 3 to Low. Return opertaions as per normal
-    set(pins, 0)
     #Wait for Falling edge so the PIO Does not continually glitch
     wait(0, pin, 0)
     
@@ -37,6 +50,8 @@ led = Pin("LED", Pin.OUT)
 led.value(1)
 
 #Initialize UART
+#When connected in Normal operation, parity = None
+#When connected in Bootloader mode, partity = 0 (EVEN)
 uart = UART(0, baudrate=115200, tx=Pin(12), rx=Pin(13))
 uart.init(bits=8, parity=None, stop=1)
 
@@ -61,7 +76,7 @@ def get_glitch_duration():
         glitch_duration = readline()
         if len(glitch_duration) != 0:
             try:
-                #PIO can run from 2000Hz to 133Mhz. Reject any other values. 
+                #GLitch duration to be determined later. According to research, should be approximately 200ns-ish
                 if (int(glitch_duration) < 1 or int(glitch_duration) > 30):
                     raise Exception
                 
