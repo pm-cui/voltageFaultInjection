@@ -9,7 +9,6 @@
 - voltage.py --> Main code for pico. Contains the main program and PIO code
 - Pico_Py folder --> Test codes for the various building blocks
 
-
 ## Current Goal
 - STM32 is running an infinite loop and a conditional statement that will never be reached
 - Using the Pico, conduct VFI to corrupt the data and break into the conditional statement
@@ -18,8 +17,9 @@
 
 ## Progress
 ### Raspberry Pi Pico (using micropython and asm_PIO)
-- Main Program
+- Main Program 
   - State Machine running at a set 100Mhz
+  - GPIO set to have a drive strength os 12mA and high slew. 
   - Prompts user for glitch duration. Calculations to send the register values for delaying the PIO will be added later (take into account rise time)
   - After getting a valid input, runs the State Machine
   
