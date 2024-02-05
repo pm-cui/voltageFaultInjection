@@ -30,6 +30,10 @@
      - Sets the GPIO to LOW for a short amount of time before setting it HIGH 
   - autopull = True causes the OSR to be automatically refilled with the value from the TX FIFO (user input - glitch duration)
 
+- In Pico_Py folder, mosfet_testing.py
+   - With the cut-off board, I am able to get a ~200ns glitch timing, goes from 3v3 to 0v and back to 3v3.
+   - With the full board, the glitch timing is still ~200ns, but the voltage drops from 3v3 to ~1.5v to 3v3.  
+
 ### STM32 Nucleo-F103RB
 - Runs an infinite loop, counting from 0 to 3.
 - Toggles PA10. 
@@ -48,42 +52,24 @@
    - GND to ST-Link CN4 Pin 3
    - CN7 Pin 13 to ST-Link CN4 Pin 4
    - NRST to ST-Link CN Pin 5
-- ST-Link able to recognise the board but unable to read/erase/write the board (see Current Issues)
 
 ### P&N MOSFET
+- Driver MOSFET Removed
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
 - Acts as switches to power and ground the STM32
- 
-### Driver MOSFET
-- Acts as a Pull-up Resistor.
-- When Pin 3's output is 0, Driver MOSFET's Gate is open and voltage is supplied to PG1 and NG1. P-Channel MOSFET is opened and no voltage is supplied to STM.
-- When Pin 3's output is 1, Driver MOSFET's Gate is closed and causes the circuit to short to GRD, causing PG1 and NG1 to not be powered. P-channel MOSFET is closed and N-Channel MOSFET is opened and voltage is supplied to STM.
 
 ## Current Issues 
 
-### Oscilloscope
-- One of the probes is not getting any readings
-- Tried to replicate the settings to the working probe but unable to get it to work
-- Therefore, unable to visualize the process of:
-   - STM32 sets PA10 high
-   - Rising edge detected on Pico
-   - Pico delays before causing glitch
-
-### Fault injection initial tests
-- Rise and Fall Time are still too long, even with the driver MOSFET Setup. All 3 MOSFET that were given were tested and gave similar results
-- When conducting the fault injection with the current setup, voltage drop is inconsistent. The dropped voltage ranges from apprioximately 2v to 1v. Mainly occurs at shorter delays when the timing is too short to allow the voltage to fully drop to 0v
-- During the execution, tx of STM32 will sometimes stop transmitting data. Resetting it will continue its operation. Mainly occurs when the glitch timing is slightly below the glitch timing of when it causes the board to continually reset.
-- Wires moving during the execution affects the results. It can cause a normal execution to continously reset. Adjusting the wire can sometimes bring it back to normal execution, even with similar glitch timings, and vice versa. 
-- Looking at other documentation of VFI proved to be of little use. Most of them use specific hardware like ChipWhisperer/FPGAs or only document the use of 1 transister/ N-channel MOSFET to induce the glitch. Tested the use of only 1 MOSFET and results were far worse than that of the my current 2 MOSFET setup.
-- Graphs of key fall/rise timings are sketched out
-
-### Cutoff board 
-- ST-Link V2 is unable to read/erase/write the memory of the cutoff stm32 board as shown in the CutOff_Board_Issues folder.
+### STM32
 - Differences between cutoff board and non-cutoff board:
    - C30 removed (AVDD). 
    - R33 removed (Boot 0). Need to connect it to ground to get out of bootloader mode
    - SB2 removed (Connection to JP6. Should not matter to my board as removed JP6's jumper and directly connecting to its pin)
-- The cut-off board drops voltage faster than the non-cut off board by approximately 0.5 microseconds. Worth looking into removing c30.
+- The cut-off board is able to glitch from 3v3 to 0 to 3v3. The full board does not drop to 0v fast enough
+
+### Fault injection initial tests
+- Wires moving during the execution affects the results. It can cause a normal execution to continously reset. Adjusting the wire can sometimes bring it back to normal execution, even with similar glitch timings, and vice versa. 
+- Graphs of key fall/rise timings are sketched out
 
 ### Bootloader mode
 - Unable to initalize USART1
@@ -93,30 +79,6 @@
    - Line 362 does the XORing of bits
    - Line 412 is the read memory command
    - Tested under an oscilloscope as well. STM32 was receiving data correctly but not transmitting the ACK or NACK as per the flowchart in the documentation
-
-
-## Results of Current Setup
-- Note: In the paper Shaping the Glitch, their drop was only took ~50ns. The total glitch time was approximately 200ns.
-  
-### No driver MOSFET, not connected to STM
-- Rise time: ~100ns, Fall time: ~100ns
-
-### Driver MOSFET ONLY , Not connected to PG1 and NG1, using 220 Ohms resistor
-- Rise time: ~50ns, Fall time: ~20ns (capacitors present)
-- Rise time: ~75ns, Fall time: ~20ns (capacitors removed)
-
-### Driver MOSFET, Not connected to PG1 and NG1, using 10k Ohms resistor
-- Rise and Fall Time increases signinficantly
-
-### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor
-- Rise time: ~200ns, Fall time: ~500ns           (capacitors present)
-- Rise time: ~1 microsecond, Fall time: ~100ns   (capacitors removed)
-
-### Driver MOSFET, Connected to PG1 and NG1, using 220 Ohms resistor, Connected to STM32
-- Rise time: ~7.5 microseconds, Fall time: ~10 microseconds (capacitors present)
-- Rise time: ~2 microseconds, Fall time: ~2.5 microseconds (capacitors removed)
-
-- Overall drop in timings but 10k ohms resistor is still increasing the rise/fall time
 
 ## To Do:
 ### Raspberry Pi Pico
