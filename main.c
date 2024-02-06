@@ -118,17 +118,22 @@ int main(void)
 		  sprintf(tx_buffer, "Inside of IF statement\n\r");
 		  HAL_UART_Transmit(&huart1, tx_buffer, 30, 10);
 		  HAL_UART_Transmit(&huart2, tx_buffer, 30, 10);
+
+		  while (1){
+			  HAL_Delay(100);
+		  }
 	  }
 
 	  for (i = 0; i < 2; i++){
 		  for (j = 0; j < 2; j++){
-			  HAL_Delay(100);
+
+			  ctrl++;
 
 			  sprintf(tx_buffer, "i = %i j = %i ctrl = %i \n\r", i, j, ctrl);
 			  HAL_UART_Transmit(&huart1, tx_buffer, 30, 10);
 			  HAL_UART_Transmit(&huart2, tx_buffer, 30, 10);
 
-			  ctrl++;
+			  HAL_Delay(100);
 		  }
 	  }
 
@@ -165,7 +170,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV16;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
