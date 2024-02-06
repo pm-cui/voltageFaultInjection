@@ -19,7 +19,7 @@
 ### Raspberry Pi Pico (using micropython and asm_PIO)
 - Main Program 
   - State Machine running at a set 100Mhz
-  - GPIO set to have a drive strength os 12mA and high slew. 
+  - GPIO set to have a drive strength of 12mA and high slew. 
   - Prompts user for glitch duration. Calculations to send the register values for delaying the PIO will be added later (take into account rise time)
   - After getting a valid input, runs the State Machine
   
@@ -29,18 +29,19 @@
   - Upon a rising edge detected on Pin 4, it induces a voltage glitch on Pin 3
      - Sets the GPIO to LOW for a short amount of time before setting it HIGH 
   - autopull = True causes the OSR to be automatically refilled with the value from the TX FIFO (user input - glitch duration)
+  - Will filter out abnormal outputs and append them to a file. The file resides in the Pico's flash memory
 
 - In Pico_Py folder, mosfet_testing.py
    - With the cut-off board, I am able to get a ~200ns glitch timing, goes from 3v3 to 0v and back to 3v3.
-   - With the full board, the glitch timing is still ~200ns, but the voltage drops from 3v3 to ~1.5v to 3v3.  
+   - With the full board, the glitch timing is still ~200ns, but the voltage drops from 3v3 to ~1v to 3v3.  
 
 ### STM32 Nucleo-F103RB
-- Runs an infinite loop, counting from 0 to 3.
+- Runs an infinite loop, counting from 1 to 4, 0 to 3 in binary. 
 - Toggles PA10. 
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder. 
 - Manipulation of register values is also present in the STM32_Disassembly folder.
 - SB12 (remove connection to NRST, which was pulling down the voltage of the MCU), C23, C24, C27, C28, C29 has been removed. Looking to remove c30.
-- JP5 and JP6 can be removed.
+- JP5, JP6 removed jumpers.
 - CN2's Jumpers can be removed. Doing so allows the use of the ST-Link v2 to program other STM32 boards. 
 
 ### STM32 Nucleo-F103RB (with ST-Link component cut off)
