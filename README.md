@@ -70,6 +70,7 @@
 ### Fault injection initial tests
 - Wires moving during the execution affects the results. It can cause a normal execution to continously reset. Adjusting the wire can sometimes bring it back to normal execution, even with similar glitch timings, and vice versa. 
 - Graphs of key fall/rise timings are sketched out
+- Osciloscope unable to show the voltage drop when the time/div is 250ms. Need to view in 5ms or lower to see the voltage drop. Likely a limitation of the osciloscope. Voltage glitch appears to drop to 0v
 
 ### Bootloader mode
 - Unable to initalize USART1
