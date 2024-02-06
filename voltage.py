@@ -90,10 +90,10 @@ def get_glitch_duration():
                 print("Enter glitch duration(ns): ", end = "")
 
 def filter(data):
-    data = data.replace("i = 0 j = 0 ctrl = 0 \n\r", "")
-    data = data.replace("i = 0 j = 1 ctrl = 1 \n\r", "")
-    data = data.replace("i = 1 j = 0 ctrl = 2 \n\r", "")
-    data = data.replace("i = 1 j = 1 ctrl = 3 \n\r", "")
+    data = data.replace("i = 0 j = 0 ctrl = 1 \n\r", "")
+    data = data.replace("i = 0 j = 1 ctrl = 2 \n\r", "")
+    data = data.replace("i = 1 j = 0 ctrl = 3 \n\r", "")
+    data = data.replace("i = 1 j = 1 ctrl = 4 \n\r", "")
     return data
     
 
