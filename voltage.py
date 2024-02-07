@@ -5,25 +5,34 @@ from rp2 import PIO, asm_pio, StateMachine
 # Set the Gate of the Driver MOSFET to HIGH for a short period, driving the voltage down. Glitches the STM32. (See sketch schematics)
 @asm_pio(set_init = rp2.PIO.OUT_LOW, out_shiftdir=PIO.SHIFT_RIGHT, autopull=True, pull_thresh=16)
 def drop_voltage():
-    # Get the glitch timing from the OSR (not in use right now)
-    #pull()
+    # Get the glitch timing and store it in the ISR
+    pull()
+    mov(isr, osr)
+    
+    # Get the delay and leave it in the OSR
+    pull()
+    
+    label("Prog_Start")
+    
+    # Move/Reloads the glitch timing and delay into the x and y registers
+    mov(x, isr)		#x contains glitch timing
+    mov(y, osr)		#y contains delay duration
     
     # Waits for Rising Edge from Pin 4 before glitching with Pin 3
     wait(1, pin, 0)
     
-    # Can include some waiting time before glitch occurs
-    nop()			[31]
-    nop()			[31]
-    nop()			[31]
-    nop()			[31]
+    # Delay duration
+    label("delay_duration")
+    nop()		
+    jmp(y_dec, "delay_duration")
     
     # Set Pin 3 to High. Induces Glitch
     set(pins, 1)
     
     # Glitch timing
-    nop()			[31]
-    nop()			[17]
-
+    label("glitch_timing")
+    nop()
+    jmp(x_dec, "glitch_timing")
     
     # Set Pin 3 to Low. Return opertaions as per normal
     set(pins, 0)
@@ -40,13 +49,16 @@ def drop_voltage():
     
     # Wait for Falling edge so the PIO does not continually glitch
     wait(0, pin, 0)
-    
+    jmp("Prog_Start")
     
 # Set Pin 3 output drive strength to be 12mA, slew to be fast. Refer to rp2040 datasheet, PADS_BANK0
 machine.mem32[0x4001c010]=0x7f
 
 # Open a file from the Pico's onchip flash memory
 fd = open("output.txt", "a")
+
+#Start flag
+start_flag = 0
 
 # Switch ON the on-board LED.
 led = Pin("LED", Pin.OUT)
@@ -74,20 +86,47 @@ def readline():
     return buffer
                 
 def get_glitch_duration():
-    print("Enter glitch duration(ns): ", end = "")
+    print("Glitch timing is accurate to 20ns")
+    print("Enter glitch duration(ns) btw 160 to 700: ", end = "")
     while True:
         glitch_duration = readline()
         if len(glitch_duration) != 0:
             try:
                 # GLitch duration to be determined later. According to research, should be approximately 200ns-ish
-                if (int(glitch_duration) < 1 or int(glitch_duration) > 30):
+                if (int(glitch_duration) < 160 or int(glitch_duration) > 700):
+                    raise Exception
+                if (int(glitch_duration) % 10 != 0):
                     raise Exception
                 
                 return glitch_duration
                 
             except:
-                print("Error, please enter an integer between 1 and 30.")
+                print("Error, please enter an integer of multiple 10 between 160 and 700.")
                 print("Enter glitch duration(ns): ", end = "")
+
+def get_delay_duration():
+    print("Enter delay duration(ns) btw 0 to 640: ", end = "")
+    while True:
+        delay_duration = readline()
+        if len(delay_duration) != 0:
+            try:
+                # GLitch duration to be determined later. According to research, should be approximately 200ns-ish
+                if (int(delay_duration) < 0 or int(delay_duration) > 640):
+                    raise Exception
+                if (int(delay_duration) % 10 != 0):
+                    raise Exception
+                
+                return delay_duration
+                
+            except:
+                print("Error, please enter an integer of multiple 10 between 160 and 600.")
+                print("Enter delay duration(ns): ", end = "")
+
+def calc_glitch_cycles(duration):
+    #nop() [11] gives a reliable glitch time of 160ns. Each extra clock cycle adds 10ns.
+    cycles = 4 + (int(duration) - 160) / 20
+    return cycles
+
 
 def filter(data):
     data = data.replace("i = 0 j = 0 ctrl = 1 \n\r", "")
@@ -96,19 +135,13 @@ def filter(data):
     data = data.replace("i = 1 j = 1 ctrl = 4 \n\r", "")
     return data
     
-
-# Get user input for the glitch duration
 print("State Machine's Frequency is set to 100Mhz")
-glitch_time = get_glitch_duration()
-
-# Set up the State Machine and puts the glitch timing to the OSR of the State Machine
-sm = StateMachine(0, drop_voltage, freq = 100_000_000, set_base = Pin(3), in_base = Pin(4))
-#sm.put(glitch_time)
-sm.active(1)
+print("Press ENTER to start!")
+print("Press ENTER during execution to change the glitch timing and delay duration!")
 
 while True:
     # Prints output of STM32 to Thonny IDE
-    if uart.any():
+    if uart.any() and start_flag == 1:
         # Removes the trailing empty spaces and decodes the string received
         data = uart.read().decode('ascii').rstrip('\xff').rstrip('\x00')
         #data = uart.read()
@@ -120,3 +153,21 @@ while True:
         data = filter(data)
         if (len(data) > 0):
             fd.write(data)
+
+    if (len(readline()) != 0):
+        start_flag = 0
+        # Set up the State Machine and puts the glitch and delay timings on the TX FIFO
+        glitch_time = get_glitch_duration()
+        glitch_cycles = calc_glitch_cycles(glitch_time)
+        print(int(glitch_cycles))
+        
+        delay_duration = get_delay_duration()
+        delay_cycles = int(delay_duration)/20
+        print(int(delay_cycles))
+        
+        # Instantiates the State Machine
+        sm = StateMachine(0, drop_voltage, freq = 100_000_000, set_base = Pin(3), in_base = Pin(4))
+        sm.put(int(glitch_cycles))
+        sm.active(1)
+        sm.put(int(delay_cycles))
+        start_flag = 1
