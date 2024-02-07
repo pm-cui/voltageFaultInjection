@@ -14,14 +14,16 @@
 - Using the Pico, conduct VFI to corrupt the data and break into the conditional statement
 - Make a terminal UI to allow users to input the duration of the glitch. 
    
-
 ## Progress
 ### Raspberry Pi Pico (using micropython and asm_PIO)
 - Main Program 
   - State Machine running at a set 100Mhz
-  - GPIO set to have a drive strength of 12mA and high slew. 
-  - Prompts user for glitch duration. Calculations to send the register values for delaying the PIO will be added later (take into account rise time)
+  - GPIO set to have a drive strength of 12mA and high slew (default was set to 4mA and low slew)
+  - Prompts user for glitch and delay durations
   - After getting a valid input, runs the State Machine
+  - Able to press the ENTER key at run time to change the glitch and duration timings
+  - Will filter out abnormal outputs and append them to a file. The file resides in the Pico's flash memory
+  - Can view the abnormality file using fileoutput.py
   
 - asm_PIO
   - Initializes Pin 3 to be the output pin, with default state being low
@@ -29,7 +31,6 @@
   - Upon a rising edge detected on Pin 4, it induces a voltage glitch on Pin 3
      - Sets the GPIO to LOW for a short amount of time before setting it HIGH 
   - autopull = True causes the OSR to be automatically refilled with the value from the TX FIFO (user input - glitch duration)
-  - Will filter out abnormal outputs and append them to a file. The file resides in the Pico's flash memory
 
 - In Pico_Py folder, mosfet_testing.py
    - With the cut-off board, I am able to get a ~200ns glitch timing, goes from 3v3 to 0v and back to 3v3.
@@ -55,23 +56,32 @@
    - NRST to ST-Link CN Pin 5
 
 ### P&N MOSFET
-- Driver MOSFET Removed
+- Driver MOSFET Removed. Using Driver MOSFET increases the rise and fall times. 
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
 - Acts as switches to power and ground the STM32
 
 ## Current Issues 
+
+### Pico
+- Currently, only one register is available for glitch timing and delay duration respectively
+- This limits how long the glitch can be, up to 32 nop(). Trade off btw accuracy and length if multiple nop() are use
 
 ### STM32
 - Differences between cutoff board and non-cutoff board:
    - C30 removed (AVDD). 
    - R33 removed (Boot 0). Need to connect it to ground to get out of bootloader mode
    - SB2 removed (Connection to JP6. Should not matter to my board as removed JP6's jumper and directly connecting to its pin)
-- The cut-off board is able to glitch from 3v3 to 0 to 3v3. The full board does not drop to 0v fast enough
+- The cut-off board is able to glitch from 3v3 to 0 to 3v3. The full board does not drop to 0v even with incresing the glitch timings
+
+### Oscilloscope 
+- Unable to show voltage drop when time/div is 250ms. Need to view in 5ms or lower
+- Likely to be limitation of oscilloscope, although at 5ms, voltage glitch appears to reliably drop to 0v
+- The graph passes too quickly to view if the delay duration is correct. Might need to seek help on how to conifgure the oscilloscope to view this
 
 ### Fault injection initial tests
 - Wires moving during the execution affects the results. It can cause a normal execution to continously reset. Adjusting the wire can sometimes bring it back to normal execution, even with similar glitch timings, and vice versa. 
 - Graphs of key fall/rise timings are sketched out
-- Osciloscope unable to show the voltage drop when the time/div is 250ms. Need to view in 5ms or lower to see the voltage drop. Likely a limitation of the osciloscope. Voltage glitch appears to drop to 0v
+- used a timing right below when the stm will force reset. Does not produce any glitch so far. Need to look into and ask what is the proper timing or do i just randomly try.
 
 ### Bootloader mode
 - Unable to initalize USART1
