@@ -142,18 +142,22 @@ print("Press ENTER during execution to change the glitch timing and delay durati
 while True:
     # Prints output of STM32 to Thonny IDE
     if uart.any() and start_flag == 1:
-        # Removes the trailing empty spaces and decodes the string received
-        data = uart.read().decode('ascii').rstrip('\xff').rstrip('\x00')
-        #data = uart.read()
-        
-        # Prints data to terminal
-        print(data)
-        
-        # Removes the expected data and only adds abnormal data to the file
-        data = filter(data)
-        if (len(data) > 0):
-            fd.write(data)
+        try:
+            # Removes the trailing empty spaces and decodes the string received
+            data = uart.read().decode('ascii').rstrip('\xff').rstrip('\x00')
+            #data = uart.read()
+            
+            # Prints data to terminal
+            print(data)
+            
+            # Removes the expected data and only adds abnormal data to the file
+            data = filter(data)
+            if (len(data) > 0):
+                fd.write(data)
 
+        except:
+            data = uart.read()
+            print(data)
     if (len(readline()) != 0):
         start_flag = 0
         # Set up the State Machine and puts the glitch and delay timings on the TX FIFO
@@ -171,3 +175,4 @@ while True:
         sm.active(1)
         sm.put(int(delay_cycles))
         start_flag = 1
+
