@@ -22,14 +22,22 @@
   - Prompts user for glitch and delay durations
   - After getting a valid input, runs the State Machine
   - Able to press the ENTER key at run time to change the glitch and duration timings
+  - Functions avail to convert user input to asm clock cycles, accurate to ~20ns. (look at issues)
+     - This accuracy should be fine as Shaping The Glitch also has approximately the same accuracy   
   - Will filter out abnormal outputs and append them to a file. The file resides in the Pico's flash memory
   - Can view the abnormality file using fileoutput.py
   
 - asm_PIO
   - Initializes Pin 3 to be the output pin, with default state being low
   - Initializes Pin 4 to be the input pin, getting input from PA10 of the STM32
-  - Upon a rising edge detected on Pin 4, it induces a voltage glitch on Pin 3
-     - Sets the GPIO to LOW for a short amount of time before setting it HIGH 
+  - Gets 2 inputs from the main program: Glitch & Delay duration:
+     - Moves Glitch duration to ISR
+     - Delay Duration to stay in OSR
+     - The pulling of values only occurs once
+  - Upon a rising edge detected on Pin 4:
+     - Delays for the number of clock cycles stated in the ISR
+     - Sets Pin 3 High for the number of clock cycles stated in OSR
+     - Sets Pin 3 Low for a small period of time before waiting for a falling edge. (prevents continous glitching)
   - autopull = True causes the OSR to be automatically refilled with the value from the TX FIFO (user input - glitch duration)
 
 - In Pico_Py folder, mosfet_testing.py
@@ -42,7 +50,7 @@
       - Outputs any abnormal data to an output file
 
 ### STM32 Nucleo-F103RB
-- Runs an infinite loop, counting from 1 to 4, 0 to 3 in binary. 
+- Runs an infinite loop, counting from 1 to 4, with i and j representing 0 to 3 in binary. 
 - Toggles PA10. 
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder.
 - If the if statement is entered, the STM enters an infinite loop and there will be no Tx/Rx of data
@@ -65,6 +73,11 @@
 - Driver MOSFET Removed. Using Driver MOSFET increases the rise and fall times. 
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
 - Acts as switches to power and ground the STM32
+
+### Button
+- Added a button to the circuit
+- A button press causes a rising edge and is used to manually trigger the rising edge
+- Only STM32 OR button should be connected to Pin 4 of Pico at any one period of time
 
 ## Current Issues 
 
