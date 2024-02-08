@@ -109,6 +109,9 @@
 - MOSFET does not fully short to ground
 - machine.reset() causes the pico to disconnect from Thonny IDE and sotp execution
 
+### Fritzing (circuit design software)
+- Only paid version available
+
 ### Bootloader mode
 - Unable to initalize USART1
 - Looked into chipwhisper's source code to see how they sent the data: https://github.com/newaetech/chipwhisperer/blob/develop/software/chipwhisperer/hardware/naeusb/programmer_stm32fserial.py#L313
