@@ -34,16 +34,22 @@
 
 - In Pico_Py folder, mosfet_testing.py
    - With the cut-off board, I am able to get a ~200ns glitch timing, goes from 3v3 to 0v and back to 3v3.
-   - With the full board, the glitch timing is still ~200ns, but the voltage drops from 3v3 to ~1v to 3v3.  
+   - With the full board, the glitch timing is still ~200ns, but the voltage drops from 3v3 to ~1v to 3v3.
+ 
+- voltage_testing.py
+   - Slight change to voltage.py:
+      - Automates the process of changing the delay and glitch durations
+      - Outputs any abnormal data to an output file
 
 ### STM32 Nucleo-F103RB
 - Runs an infinite loop, counting from 1 to 4, 0 to 3 in binary. 
 - Toggles PA10. 
-- Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder. 
-- Manipulation of register values is also present in the STM32_Disassembly folder.
+- Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder.
+- If the if statement is entered, the STM enters an infinite loop and there will be no Tx/Rx of data
 - SB12 (remove connection to NRST, which was pulling down the voltage of the MCU), C23, C24, C27, C28, C29 has been removed. Looking to remove c30.
 - JP5, JP6 removed jumpers.
-- CN2's Jumpers can be removed. Doing so allows the use of the ST-Link v2 to program other STM32 boards. 
+- CN2's Jumpers can be removed. Doing so allows the use of the ST-Link v2 to program other STM32 boards.
+- Now runs at 4Mhz
 
 ### STM32 Nucleo-F103RB (with ST-Link component cut off)
 - Conection to ST-Link are as follows:
@@ -62,7 +68,7 @@
 
 ## Current Issues 
 
-### Pico
+### Pico (pio_asm)
 - Currently, only one register is available for glitch timing and delay duration respectively
 - This limits how long the glitch can be, up to 32 nop(). Trade off btw accuracy and length if multiple nop() are use
 
@@ -75,13 +81,33 @@
 
 ### Oscilloscope 
 - Unable to show voltage drop when time/div is 250ms. Need to view in 5ms or lower
-- Likely to be limitation of oscilloscope, although at 5ms, voltage glitch appears to reliably drop to 0v
-- The graph passes too quickly to view if the delay duration is correct. Might need to seek help on how to conifgure the oscilloscope to view this
+- Likely to be limitation of oscilloscope, although at 5ms/div, voltage glitch appears but it is inconsistent in its drop.
+- The osciloscope does not show a stable graph at 5ms/div. Might need help for oscilloscope settings
 
-### Fault injection initial tests
+### Hardware Issues
 - Wires moving during the execution affects the results. It can cause a normal execution to continously reset. Adjusting the wire can sometimes bring it back to normal execution, even with similar glitch timings, and vice versa. 
 - Graphs of key fall/rise timings are sketched out
-- used a timing right below when the stm will force reset. Does not produce any glitch so far. Need to look into and ask what is the proper timing or do i just randomly try.
+
+### Testing (Rising edge)
+- Results of the initial tests using voltage_testing.py is shown in the "Test_Results(Fail).png"
+- Test is as follows:
+   - Find the glitch duration which always forces the STM32 to reset
+   - Look at the disassembly of STM32 to identify possible weak points to glitch
+   - Using a nested for loop, brute force the glitch & delay timings
+   - Each loop runs for 1min 30 sec. Entering the loop will output the glitch and delay cycles to an output file (one time).
+   - Program will write any abnormal output to the output file as well, indicating which glitch/delay cycle the glitch occured
+- No successful runs were found
+
+### Testing (Button input)
+- Connected a button to the circuit
+- When pressed, a rising edge will be detected by Pin 4, triggering the glitch
+- Varied the glitch duration while testing
+- No successful runs were found
+
+### Force resetting of STM
+- Tried 2 methods: Using MOSFET to short the 3v3 to ground | Reset the pico using machine.reset()
+- MOSFET does not fully short to ground
+- machine.reset() causes the pico to disconnect from Thonny IDE and sotp execution
 
 ### Bootloader mode
 - Unable to initalize USART1
@@ -91,18 +117,17 @@
    - Line 362 does the XORing of bits
    - Line 412 is the read memory command
    - Tested under an oscilloscope as well. STM32 was receiving data correctly but not transmitting the ACK or NACK as per the flowchart in the documentation
-
+- Unable to find any examples online that utilizes bootloader commands
+  
 ## To Do:
 ### Raspberry Pi Pico
-- Add a function to convert the glitch duration in ns to number of cycles
-- Pass the values to PIO to utilize for glitching 
-- Nested for loop is available. 4 Registers can be used: OSR, ISR, x, y
+- N changes as of now. 
 
 ### STM32 Nucleo-F103RB
-- Using the ST-Link debugger, program the cutoff board and test it
+- Desolder c30 from the full board. 
 
 ### MOFSET
-- No changes to be made as of now.
+- No changes as of now.
 
 ### Firmware Analysis
 - Research on the basics of firmware analysis
