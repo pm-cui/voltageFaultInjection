@@ -153,7 +153,7 @@
    -    https://www.youtube.com/watch?v=hevWfbWOIew 
    -    https://www.tarlogic.com/blog/owasp-fstm-stage-3-analyzing-firmware/
    -    https://roman1.gitbook.io/blog/embedded-device-exploitation/introduction-to-firmware-analysis
-   -    https://www.youtube.com/watch?v=q4CxE5P6RUE ** Bare-metal ARM firmware reverse engineering with Ghidra and SVD Loader
+   -    ** https://www.youtube.com/watch?v=q4CxE5P6RUE ** Bare-metal ARM firmware reverse engineering with Ghidra and SVD Loader (The video uses STM32F446RE)
 - Download Ghidra and SVD loader and analyze firmware in the video
 
 ## Future Goals
