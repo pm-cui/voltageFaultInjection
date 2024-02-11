@@ -79,6 +79,11 @@
 - A button press causes a rising edge and is used to manually trigger the rising edge
 - Only STM32 OR button should be connected to Pin 4 of Pico at any one period of time
 
+### Ghidra
+- STM32 is a Bare Metal system, application runs directly on the hardware
+- Memory-mapped peripherals, Check datasheet of the processor for memory map ***
+- Followed along with the video and used Ghidra to analyze the given firmware files
+
 ## Current Issues 
 
 ### Pico (pio_asm)
