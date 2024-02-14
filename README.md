@@ -90,6 +90,7 @@
 - Currently, only one register is available for glitch timing and delay duration respectively
 - This limits how long the glitch can be, up to 32 nop(). Trade off btw accuracy and length if multiple nop() are use
 - Although scratch registers are 32 bits, only 5 bits are DATA bits. (3.4.10.2 Operation)
+- set() would clear all bits but the 5 LSB (data bits). All other operations will retain the full 32 bits.
 - PIO instructions only works with values ranging from 0-31. Anything higer and the program exhibits abnormal behaviour
 - My implementation/idea was to utilize 1 register to hold the number of cycles which delay duration was going to delay for
    - bits 0-4 and bits 5-9 would hold the number of cycles to delay for
