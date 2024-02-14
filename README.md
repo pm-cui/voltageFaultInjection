@@ -89,6 +89,20 @@
 ### Pico (pio_asm)
 - Currently, only one register is available for glitch timing and delay duration respectively
 - This limits how long the glitch can be, up to 32 nop(). Trade off btw accuracy and length if multiple nop() are use
+- Although scratch registers are 32 bits, only 5 bits are DATA bits. (3.4.10.2 Operation)
+- PIO instructions only works with values ranging from 0-31. Anything higer and the program exhibits abnormal behaviour
+- My implementation/idea was to utilize 1 register to hold the number of cycles which delay duration was going to delay for
+   - bits 0-4 and bits 5-9 would hold the number of cycles to delay for
+   - nop()  [31] -> Loop this [bit 0-4] number of times
+   - nop() -> Loop this [bit 5-9] number of times
+   - However, this implementation is currently not possible
+- PULL instruction REMOVES a 32bit word from the TX FIFO before placing it on the OSR (NOT copies)
+   - Unable to refresh the delay duration's value from main program (ASM and Main prog run at diff speeds, asm runs much faster than python)
+   - OUT instruction does not work as TX FIFO is cleared (along with autopull)
+   - Shift registers are useful but we only have access to 2 of them (OSR, ISR)
+- 2 registers are already used for glitch duration. At least 3 registers are needed OR being able to access specific bits in a scratch registers are required in order to increase the acceptable range of delay duration
+   - A nested for loop would decrement 2 register values
+   - One more needed to store the original value 
 
 ### STM32
 - Differences between cutoff board and non-cutoff board:
