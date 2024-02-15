@@ -122,9 +122,8 @@
 - The cut-off board is able to glitch from 3v3 to 0 to 3v3. The full board does not drop to 0v even with incresing the glitch timings
 
 ### Oscilloscope 
-- Unable to show voltage drop when time/div is 250ms. Need to view in 5ms or lower
-- Likely to be limitation of oscilloscope, although at 5ms/div, voltage glitch appears but it is inconsistent in its drop.
-- The osciloscope does not show a stable graph at 5ms/div. Might need help for oscilloscope settings
+- Using the Stop/Run Button, able to capture specific points of time where the glitch happens.
+- Voltage during the VFI process does not drop fully to 0v but instead drops to approximately 1v. Still able to cause the STM to fully reset. 
 
 ### Hardware Issues
 - Wires moving during the execution affects the results. It can cause a normal execution to continously reset. Adjusting the wire can sometimes bring it back to normal execution, even with similar glitch timings, and vice versa. 
