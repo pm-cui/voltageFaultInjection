@@ -1,30 +1,46 @@
 import time, sys, uselect
 from machine import Pin, UART
 from rp2 import PIO, asm_pio, StateMachine
+import math
 
 # Set the Gate of the Driver MOSFET to HIGH for a short period, driving the voltage down. Glitches the STM32. (See sketch schematics)
 @asm_pio(set_init = rp2.PIO.OUT_LOW, out_shiftdir=PIO.SHIFT_RIGHT, autopull=True, pull_thresh=16)
 def drop_voltage():
-    # Get the glitch timing and store it in the ISR
+    # Delay and Glitch durations are all inside the 32bit string.
+    # Bits 0-4 is used for delay duration (32 cycle loop)
+    # Bits 5-9 is used for delay duration (2 cycle loop)
+    # Bits 10-14 is used for glitch duration
     pull()
     mov(isr, osr)
     
-    # Get the delay and leave it in the OSR
-    pull()
-    
+    # Start of program
     label("Prog_Start")
     
     # Move/Reloads the glitch timing and delay into the x and y registers
-    mov(x, isr)		#x contains glitch timing
-    mov(y, osr)		#y contains delay duration
+    out(x, 5)		#x contains the delay duration (2 cycle loop) 
+    out(y, 5)		#y contains the delay duration (32 cycle loop)
+    #nop()			#The 5 LSB of OSR should now contain the glitch duration
     
     # Waits for Rising Edge from Pin 4 before glitching with Pin 3
     wait(1, pin, 0)
     
-    # Delay duration
-    label("delay_duration")
+    # 2 cycle delay
+    label("delay_short")
     nop()		
-    jmp(y_dec, "delay_duration")
+    jmp(x_dec, "delay_short")
+    
+    # Skips 32 cycle delay and goes to glitch
+    jmp(not_y, "Glitch")
+    
+    # 32 cycle delay
+    label("delay_long")
+    nop()		[30]
+    jmp(y_dec, "delay_long")
+    
+    
+    label("Glitch")
+    # Moves the glitch timing to scratch register X
+    mov(x, osr)
     
     # Set Pin 3 to High. Induces Glitch
     set(pins, 1)
@@ -33,7 +49,7 @@ def drop_voltage():
     label("glitch_timing")
     nop()
     jmp(x_dec, "glitch_timing")
-    
+
     # Set Pin 3 to Low. Return opertaions as per normal
     set(pins, 0)
     
@@ -46,7 +62,8 @@ def drop_voltage():
     jmp(y_dec, "delay_low_inner")
     jmp(x_dec, "delay_low_outer")
     
-    
+    # Reloads the original value back into OSR
+    mov(osr, isr)
     # Wait for Falling edge so the PIO does not continually glitch
     wait(0, pin, 0)
     jmp("Prog_Start")
@@ -57,8 +74,11 @@ machine.mem32[0x4001c010]=0x7f
 # Open a file from the Pico's onchip flash memory
 fd = open("output.txt", "a")
 
-#Start flag
+# Start flag
 start_flag = 0
+
+# Bit string to be sent to PIO asm through TX FIFO
+bit_string = 0
 
 # Switch ON the on-board LED.
 led = Pin("LED", Pin.OUT)
@@ -105,13 +125,13 @@ def get_glitch_duration():
                 print("Enter glitch duration(ns): ", end = "")
 
 def get_delay_duration():
-    print("Enter delay duration(ns) btw 0 to 640: ", end = "")
+    print("Enter delay duration(ns) btw 30 to 20000: ", end = "")
     while True:
         delay_duration = readline()
         if len(delay_duration) != 0:
             try:
-                # GLitch duration to be determined later. According to research, should be approximately 200ns-ish
-                if (int(delay_duration) < 0 or int(delay_duration) > 640):
+                # Cap is 21,120 i believe
+                if (int(delay_duration) < 30 or int(delay_duration) > 20000):
                     raise Exception
                 if (int(delay_duration) % 10 != 0):
                     raise Exception
@@ -119,7 +139,7 @@ def get_delay_duration():
                 return delay_duration
                 
             except:
-                print("Error, please enter an integer of multiple 10 between 160 and 600.")
+                print("Error, please enter an integer of multiple 10 between 30 and 20000.")
                 print("Enter delay duration(ns): ", end = "")
 
 def calc_glitch_cycles(duration):
@@ -163,16 +183,26 @@ while True:
         # Set up the State Machine and puts the glitch and delay timings on the TX FIFO
         glitch_time = get_glitch_duration()
         glitch_cycles = calc_glitch_cycles(glitch_time)
+        bit_string = int(glitch_cycles) << 10		#Logical shift left by 10 bits
         print(int(glitch_cycles))
         
         delay_duration = get_delay_duration()
-        delay_cycles = int(delay_duration)/20
-        print(int(delay_cycles))
+        if (int(delay_duration) < 650):
+            delay_cycles = (int(delay_duration) - 30 )/20	# At least 3 cycles is being used for delay. Need to account for them
+            bit_string = bit_string + int(delay_cycles)		# No need to shift 2 cycle delay as they are the 5 LSB
+        else:
+            long_delay_cycles = math.floor((int(delay_duration) - 30) / 320) 
+            delay_cycles = math.floor((int(delay_duration) - (long_delay_cycles *320) ) / 20)
+            long_delay_cycles = long_delay_cycles - 1 # Loops in PIO index starts at 0
+            delay_cycles = delay_cycles -1
+            bit_string = bit_string + (long_delay_cycles << 5)
+            bit_string = bit_string + delay_cycles
+            print(f"long delay cycle: {long_delay_cycles}")
+        print(f"Delay Cycles: {delay_cycles}")
+        print(f"Bit_string: {bit_string}")
         
         # Instantiates the State Machine
         sm = StateMachine(0, drop_voltage, freq = 100_000_000, set_base = Pin(3), in_base = Pin(4))
-        sm.put(int(glitch_cycles))
+        sm.put(int(bit_string))
         sm.active(1)
-        sm.put(int(delay_cycles))
         start_flag = 1
-
