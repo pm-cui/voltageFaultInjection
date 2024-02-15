@@ -1,30 +1,46 @@
 import time, sys, uselect
 from machine import Pin, UART
 from rp2 import PIO, asm_pio, StateMachine
+import math
 
 # Set the Gate of the Driver MOSFET to HIGH for a short period, driving the voltage down. Glitches the STM32. (See sketch schematics)
 @asm_pio(set_init = rp2.PIO.OUT_LOW, out_shiftdir=PIO.SHIFT_RIGHT, autopull=True, pull_thresh=16)
 def drop_voltage():
-    # Get the glitch timing and store it in the ISR
+    # Delay and Glitch durations are all inside the 32bit string.
+    # Bits 0-4 is used for delay duration (32 cycle loop)
+    # Bits 5-9 is used for delay duration (2 cycle loop)
+    # Bits 10-14 is used for glitch duration
     pull()
     mov(isr, osr)
     
-    # Get the delay and leave it in the OSR
-    pull()
-    
+    # Start of program
     label("Prog_Start")
     
     # Move/Reloads the glitch timing and delay into the x and y registers
-    mov(x, isr)		#x contains glitch timing
-    mov(y, osr)		#y contains delay duration
+    out(x, 5)		#x contains the delay duration (2 cycle loop) 
+    out(y, 5)		#y contains the delay duration (32 cycle loop)
+    #nop()			#The 5 LSB of OSR should now contain the glitch duration
     
     # Waits for Rising Edge from Pin 4 before glitching with Pin 3
     wait(1, pin, 0)
     
-    # Delay duration
-    label("delay_duration")
+    # 2 cycle delay
+    label("delay_short")
     nop()		
-    jmp(y_dec, "delay_duration")
+    jmp(x_dec, "delay_short")
+    
+    # Skips 32 cycle delay and goes to glitch
+    jmp(not_y, "Glitch")
+    
+    # 32 cycle delay
+    label("delay_long")
+    nop()		[30]
+    jmp(y_dec, "delay_long")
+    
+    
+    label("Glitch")
+    # Moves the glitch timing to scratch register X
+    mov(x, osr)
     
     # Set Pin 3 to High. Induces Glitch
     set(pins, 1)
@@ -33,7 +49,7 @@ def drop_voltage():
     label("glitch_timing")
     nop()
     jmp(x_dec, "glitch_timing")
-    
+
     # Set Pin 3 to Low. Return opertaions as per normal
     set(pins, 0)
     
@@ -46,7 +62,8 @@ def drop_voltage():
     jmp(y_dec, "delay_low_inner")
     jmp(x_dec, "delay_low_outer")
     
-    
+    # Reloads the original value back into OSR
+    mov(osr, isr)
     # Wait for Falling edge so the PIO does not continually glitch
     wait(0, pin, 0)
     jmp("Prog_Start")
@@ -59,6 +76,9 @@ fd = open("output.txt", "a")
 
 #Start flag
 start_flag = 0
+
+# Bit String
+bit_string = 0
 
 # Switch ON the on-board LED.
 led = Pin("LED", Pin.OUT)
@@ -136,16 +156,33 @@ def filter(data):
     return data
 
 
-for i in range (27, 9, -1):
-    for j in range(0, 6):
+for i in range (240, 320, 20):
+    for j in range(710, 800, 20):
         #Run each cycle for 30sec
-        t_end = time.time() + 60*2
-        fd.write(f"Glitch cycle {i}, delay cycle {j} \n")
+        t_end = time.time() + 30
+        fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
+        
+        glitch_cycles = calc_glitch_cycles(i)
+        bit_string = int(glitch_cycles) << 10		#Logical shift left by 10 bits
+        print(glitch_cycles)
+        
+        if (j < 650):
+            delay_cycles = (j - 30 )/20	# At least 3 cycles is being used for delay. Need to account for them
+            bit_string = bit_string + int(delay_cycles)		# No need to shift 2 cycle delay as they are the 5 LSB
+        else:
+            long_delay_cycles = math.floor((j - 30) / 320) 
+            delay_cycles = math.floor((j - (long_delay_cycles *320) ) / 20)
+            long_delay_cycles = long_delay_cycles - 1 # Loops in PIO index starts at 0
+            delay_cycles = delay_cycles -1
+            bit_string = bit_string + (long_delay_cycles << 5)
+            bit_string = bit_string + delay_cycles
+            print(f"long delay cycle: {long_delay_cycles}")
+        print(f"Delay Cycles: {delay_cycles}")
+        print(f"Bit_string: {bit_string}")
         
         sm = StateMachine(0, drop_voltage, freq = 100_000_000, set_base = Pin(3), in_base = Pin(4))
-        sm.put(i)
+        sm.put(bit_string)
         sm.active(1)
-        sm.put(j)
         start_flag = 1
 
         while time.time() < t_end:
@@ -166,4 +203,3 @@ for i in range (27, 9, -1):
                 except:
                     data = uart.read()
                     print(data)
-
