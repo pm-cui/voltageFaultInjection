@@ -26,6 +26,15 @@
      - This accuracy should be fine as Shaping The Glitch also has approximately the same accuracy   
   - Will filter out abnormal outputs and append them to a file. The file resides in the Pico's flash memory
   - Can view the abnormality file using fileoutput.py
+  - voltage_testing.py automates the testing of VFI
+  - Delay can now go up to ~20,000ns
+     - Although registers are 32 bits, only 5 data bits are present, and instructions can work with integers <=32, although the full 32 bit register can be used
+     - 2 shift registers and 2 scratch registers present
+     - Pass in a bit string containing the glitch duration and delay duration to the TX FIFO
+        - Bits 0-4: Number of cycles for short delay (2 cycles per loop)
+        - Bits 5-9: Number of cycles for long delay (32 cycles per loop)
+        - Bits 10-14: Number of cycles for glitch
+        - Utilizing OUT instruction, able to store glitch and delay durations.
   
 - asm_PIO
   - Initializes Pin 3 to be the output pin, with default state being low
