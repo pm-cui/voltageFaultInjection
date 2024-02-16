@@ -9,6 +9,7 @@
 - voltage.py --> Main code for pico. Contains the main program and PIO code
 - Pico_Py folder --> Test codes for the various building blocks
 - hello.bin -> binary file downloaded from STM32CubeIDE
+- Circuit & waveform sketches are currently done on paper
 
 ## Current Goal
 - STM32 is running an infinite loop and a conditional statement that will never be reached
