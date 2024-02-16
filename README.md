@@ -169,7 +169,8 @@
 - N changes as of now. 
 
 ### STM32 Nucleo-F103RB
-- Desolder c30 from the full board. 
+- Desolder c30 from the full board.
+- https://community.st.com/t5/stm32-mcus/how-to-utilize-stm32-system-rom-bootloader-commands/ta-p/605286
 
 ### MOFSET
 - No changes as of now.
