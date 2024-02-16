@@ -93,6 +93,8 @@
 - STM32 is a Bare Metal system, application runs directly on the hardware
 - Memory-mapped peripherals, Check datasheet of the processor for memory map ***
 - Followed along with the video and used Ghidra to analyze the given firmware files
+- Downlaoded the bin file from the stm32cubeide to start analyzing the disassembly
+- Did some basic analysis on hello.bin 
 
 ## Current Issues 
 
