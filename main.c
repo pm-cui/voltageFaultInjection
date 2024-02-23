@@ -44,8 +44,8 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint8_t tx_buffer[30];
-uint8_t rx_buffer[30];
+uint8_t tx_buffer[40];
+uint8_t rx_buffer[40];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,6 +95,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
   int ctrl, i, j;
   int flag = 0;
+  int up_counter = 0;
+  int down_counter = 50;
   sprintf(tx_buffer, "STM Starting...\n\r");
   HAL_UART_Transmit(&huart1, tx_buffer, 30, 10);
   HAL_UART_Transmit(&huart2, tx_buffer, 30, 10);
@@ -108,10 +110,28 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  ctrl = 0;
-	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_10);
+	  /*
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 1);
+	  for (i = 1000; i > 0; i--){
+		  down_counter -= 1;
+		  up_counter += 1;
+	  }
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 0);
+
+	  sprintf(tx_buffer, "up_counter: %i, down_counter: %i \n\r", up_counter, down_counter);
+	  HAL_UART_Transmit(&huart1, tx_buffer, 40, 10);
+	  HAL_UART_Transmit(&huart2, tx_buffer, 40, 10);
+
+	  up_counter = 0;
+	  down_counter = 1000;
+	  HAL_Delay(50);
+	  */
 
 
+	  // Original code
+	  i = 0; j = 0; ctrl = 0;
+
+	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 1);
 	  if (flag != 0){
 		  //Prints only once when first booted
 		  //Allows us to know if the STM has restarted when voltage has dropped
@@ -123,20 +143,23 @@ int main(void)
 			  HAL_Delay(100);
 		  }
 	  }
+	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 0);
 
-	  for (i = 0; i < 2; i++){
-		  for (j = 0; j < 2; j++){
+
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 1);
+	  for (i = 0; i < 10; i++){
+		  for (j = 0; j < 100; j++){
 
 			  ctrl++;
 
-			  sprintf(tx_buffer, "i = %i j = %i ctrl = %i \n\r", i, j, ctrl);
-			  HAL_UART_Transmit(&huart1, tx_buffer, 30, 10);
-			  HAL_UART_Transmit(&huart2, tx_buffer, 30, 10);
-
-			  HAL_Delay(100);
 		  }
 	  }
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 0);
 
+	  sprintf(tx_buffer, "i = %i j = %i ctrl = %i \n\r", i, j, ctrl);
+	  HAL_UART_Transmit(&huart1, tx_buffer, 30, 10);
+	  HAL_UART_Transmit(&huart2, tx_buffer, 30, 10);
+	  HAL_Delay(50);
 
   }
   /* USER CODE END 3 */
@@ -170,7 +193,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV16;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV2;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
