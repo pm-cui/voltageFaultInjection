@@ -122,4 +122,4 @@
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
 - Do firmware analysis on the extracted firmware code
-- Differential fault analysis
+- Look into breaking common encryption methods such as RSA, with differential fault attacks
