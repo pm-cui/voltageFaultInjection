@@ -41,19 +41,11 @@
 - asm_PIO
   - Initializes Pin 3 to be the output pin, with default state being low
   - Initializes Pin 4 to be the input pin, getting input from PA10 of the STM32
-  - Gets 2 inputs from the main program: Glitch & Delay duration:
-     - Moves Glitch duration to ISR
-     - Delay Duration to stay in OSR
-     - The pulling of values only occurs once
+  - Gets Glitch and Delay durations using the ISR to shift bits out.
   - Upon a rising edge detected on Pin 4:
      - Delays for the number of clock cycles stated in the ISR
      - Sets Pin 3 High for the number of clock cycles stated in OSR
      - Sets Pin 3 Low for a small period of time before waiting for a falling edge. (prevents continous glitching)
-  - autopull = True causes the OSR to be automatically refilled with the value from the TX FIFO (user input - glitch duration)
-
-- In Pico_Py folder, mosfet_testing.py
-   - With the cut-off board, I am able to get a ~200ns glitch timing, goes from 3v3 to 0v and back to 3v3.
-   - With the full board, the glitch timing is still ~200ns, but the voltage drops from 3v3 to ~1v to 3v3.
  
 - voltage_testing.py
    - Slight change to voltage.py:
@@ -61,7 +53,7 @@
       - Outputs any abnormal data to an output file
 
 ### STM32 Nucleo-F103RB
-- Runs an infinite loop, counting from 1 to 4, with i and j representing 0 to 3 in binary. 
+- Runs a loop counting from 0 to 1000
 - Toggles PA10. 
 - Contains a if statement that can never be reached. This is not optimized out as seen from the STM32_Disassembly folder.
 - If the if statement is entered, the STM enters an infinite loop and there will be no Tx/Rx of data
@@ -85,11 +77,6 @@
 - Connection of MOSFET is akin to Pull-up/Pull-down resistors.
 - Acts as switches to power and ground the STM32
 
-### Button
-- Added a button to the circuit
-- A button press causes a rising edge and is used to manually trigger the rising edge
-- Only STM32 OR button should be connected to Pin 4 of Pico at any one period of time
-
 ### Ghidra
 - STM32 is a Bare Metal system, application runs directly on the hardware
 - Memory-mapped peripherals, Check datasheet of the processor for memory map ***
@@ -99,25 +86,6 @@
 
 ## Current Issues 
 
-### Pico (pio_asm)
-- Currently, only one register is available for glitch timing and delay duration respectively
-- This limits how long the glitch can be, up to 32 nop(). Trade off btw accuracy and length if multiple nop() are use
-- Although scratch registers are 32 bits, only 5 bits are DATA bits. (3.4.10.2 Operation)
-- set() would clear all bits but the 5 LSB (data bits). All other operations will retain the full 32 bits.
-- PIO instructions only works with values ranging from 0-31. Anything higer and the program exhibits abnormal behaviour
-- My implementation/idea was to utilize 1 register to hold the number of cycles which delay duration was going to delay for
-   - bits 0-4 and bits 5-9 would hold the number of cycles to delay for
-   - nop()  [31] -> Loop this [bit 0-4] number of times
-   - nop() -> Loop this [bit 5-9] number of times
-   - However, this implementation is currently not possible
-- PULL instruction REMOVES a 32bit word from the TX FIFO before placing it on the OSR (NOT copies)
-   - Unable to refresh the delay duration's value from main program (ASM and Main prog run at diff speeds, asm runs much faster than python)
-   - OUT instruction does not work as TX FIFO is cleared (along with autopull)
-   - Shift registers are useful but we only have access to 2 of them (OSR, ISR)
-- 2 registers are already used for glitch duration. At least 3 registers are needed OR being able to access specific bits in a scratch registers are required in order to increase the acceptable range of delay duration
-   - A nested for loop would decrement 2 register values
-   - One more needed to store the original value 
-
 ### STM32
 - Differences between cutoff board and non-cutoff board:
    - C30 removed (AVDD). 
@@ -125,58 +93,20 @@
    - SB2 removed (Connection to JP6. Should not matter to my board as removed JP6's jumper and directly connecting to its pin)
 - The cut-off board is able to glitch from 3v3 to 0 to 3v3. The full board does not drop to 0v even with incresing the glitch timings
 
-### Oscilloscope 
-- Using the Stop/Run Button, able to capture specific points of time where the glitch happens.
-- Voltage during the VFI process does not drop fully to 0v but instead drops to approximately 1v. Still able to cause the STM to fully reset. 
-
-### Hardware Issues
-- Wires moving during the execution affects the results. It can cause a normal execution to continously reset. Adjusting the wire can sometimes bring it back to normal execution, even with similar glitch timings, and vice versa. 
-- Graphs of key fall/rise timings are sketched out
-
-### Testing (Rising edge)
-- Results of the initial tests using voltage_testing.py is shown in the "Test_Results(Fail).png"
-- Test is as follows:
-   - Find the glitch duration which always forces the STM32 to reset
-   - Look at the disassembly of STM32 to identify possible weak points to glitch
-   - Using a nested for loop, brute force the glitch & delay timings
-   - Each loop runs for 1min 30 sec. Entering the loop will output the glitch and delay cycles to an output file (one time).
-   - Program will write any abnormal output to the output file as well, indicating which glitch/delay cycle the glitch occured
-- No successful runs were found
-
-### Testing (Button input)
-- Connected a button to the circuit
-- When pressed, a rising edge will be detected by Pin 4, triggering the glitch
-- Varied the glitch duration while testing
-- No successful runs were found
 
 ### Force resetting of STM
 - Tried 2 methods: Using MOSFET to short the 3v3 to ground | Reset the pico using machine.reset()
 - MOSFET does not fully short to ground
 - machine.reset() causes the pico to disconnect from Thonny IDE and sotp execution
-
-### Fritzing (circuit design software)
-- Only paid version available
-
-### Bootloader mode
-- Unable to initalize USART1
-- Looked into chipwhisper's source code to see how they sent the data: https://github.com/newaetech/chipwhisperer/blob/develop/software/chipwhisperer/hardware/naeusb/programmer_stm32fserial.py#L313
-   - Replicated the sending of bytes on line 345 of the repo above but not receiving any data
-   - Line 313 is the conditionals after receiving the ACK.
-   - Line 362 does the XORing of bits
-   - Line 412 is the read memory command
-   - Tested under an oscilloscope as well. STM32 was receiving data correctly but not transmitting the ACK or NACK as per the flowchart in the documentation
-- Unable to find any examples online that utilizes bootloader commands
   
 ## To Do:
-### Raspberry Pi Pico
-- N changes as of now. 
 
-### STM32 Nucleo-F103RB
-- Desolder c30 from the full board.
-- https://community.st.com/t5/stm32-mcus/how-to-utilize-stm32-system-rom-bootloader-commands/ta-p/605286
-
-### MOFSET
-- No changes as of now.
+### Variables affecting Glitching
+- Test various factors known to affect VFI and note their effect. These include:
+   - Temperature
+   - Clock speed
+   - Glitch Duration
+   - Glitch Waveform
 
 ### Firmware Analysis
 - Research on the basics of firmware analysis
@@ -191,7 +121,5 @@
 
 ## Future Goals
 - Dump the STM32's memory to terminal using VFI.
-- As of now:
-   - Able to enter bootloader mode
-   - Looking into sending data through the USART to use the Bootloader Commands.
 - Do firmware analysis on the extracted firmware code
+- Differential fault analysis
