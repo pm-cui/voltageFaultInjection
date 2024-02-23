@@ -24,10 +24,13 @@ def drop_voltage():
     # Waits for Rising Edge from Pin 4 before glitching with Pin 3
     wait(1, pin, 0)
     
+    
     # 2 cycle delay
     label("delay_short")
     nop()		
     jmp(x_dec, "delay_short")
+    
+    #nop()
     
     # Skips 32 cycle delay and goes to glitch
     jmp(not_y, "Glitch")
@@ -36,7 +39,6 @@ def drop_voltage():
     label("delay_long")
     nop()		[30]
     jmp(y_dec, "delay_long")
-    
     
     label("Glitch")
     # Moves the glitch timing to scratch register X
@@ -49,6 +51,8 @@ def drop_voltage():
     label("glitch_timing")
     nop()
     jmp(x_dec, "glitch_timing")
+    
+    #nop()	
 
     # Set Pin 3 to Low. Return opertaions as per normal
     set(pins, 0)
@@ -144,34 +148,34 @@ def get_delay_duration():
 
 def calc_glitch_cycles(duration):
     #nop() [11] gives a reliable glitch time of 160ns. Each extra clock cycle adds 10ns.
-    cycles = 4 + (int(duration) - 160) / 20
+    cycles = 5 + (int(duration) - 160) / 20
     return cycles
 
 
 def filter(data):
-    data = data.replace("i = 0 j = 0 ctrl = 1 \n\r", "")
-    data = data.replace("i = 0 j = 1 ctrl = 2 \n\r", "")
-    data = data.replace("i = 1 j = 0 ctrl = 3 \n\r", "")
-    data = data.replace("i = 1 j = 1 ctrl = 4 \n\r", "")
+    data = data.replace("i = 10 j = 100 ctrl = 1000 \n\r", '')
     return data
 
 
-for i in range (240, 320, 20):
-    for j in range(710, 800, 20):
-        #Run each cycle for 30sec
-        t_end = time.time() + 30
-        fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
+#while True:
+for i in range (260, 280, 20): #glitch duration. Accurate to ~20ns
+    for j in range(380, 1000, 20): #delay duration. Accurate to ~20ns
+        t_end = time.time() + 5
+        #fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
         
         glitch_cycles = calc_glitch_cycles(i)
         bit_string = int(glitch_cycles) << 10		#Logical shift left by 10 bits
         print(glitch_cycles)
+        print(f"Glitch duration: {i}")
+        print(f"Delay duration: {j}")
         
-        if (j < 650):
-            delay_cycles = (j - 30 )/20	# At least 3 cycles is being used for delay. Need to account for them
+        if (j < 780):
+            #~90ns of delay is due to current travel time(?). Was mentioned before in one of the meetings. 
+            delay_cycles = (j - 140 )/20	# At least 4 cycles is being used for delay. 
             bit_string = bit_string + int(delay_cycles)		# No need to shift 2 cycle delay as they are the 5 LSB
         else:
-            long_delay_cycles = math.floor((j - 30) / 320) 
-            delay_cycles = math.floor((j - (long_delay_cycles *320) ) / 20)
+            long_delay_cycles = math.floor((j - 140) / 320) 
+            delay_cycles = math.floor((j - (long_delay_cycles *320) - 110 ) / 20) #~90ns of delay + 10ns of delay to copy osr into x
             long_delay_cycles = long_delay_cycles - 1 # Loops in PIO index starts at 0
             delay_cycles = delay_cycles -1
             bit_string = bit_string + (long_delay_cycles << 5)
@@ -195,11 +199,23 @@ for i in range (240, 320, 20):
                     # Prints data to terminal
                     print(data)
                     
+                    if (data != "i = 10 j = 100 ctrl = 1000 \n\r"):
+                        fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
+                        print("Writing")
+                        fd.write(data)
+                    
                     # Removes the expected data and only adds abnormal data to the file
                     data = filter(data)
                     if (len(data) > 0):
+                        fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
+                        #print("Writing")
+                        print(data)
                         fd.write(data)
 
                 except:
                     data = uart.read()
                     print(data)
+
+
+
+
