@@ -30,7 +30,7 @@ def drop_voltage():
     nop()		
     jmp(x_dec, "delay_short")
     
-    #nop()
+    nop()
     
     # Skips 32 cycle delay and goes to glitch
     jmp(not_y, "Glitch")
@@ -71,6 +71,13 @@ def drop_voltage():
     # Wait for Falling edge so the PIO does not continually glitch
     wait(0, pin, 0)
     jmp("Prog_Start")
+
+@asm_pio(set_init = rp2.PIO.OUT_LOW, out_shiftdir=PIO.SHIFT_RIGHT, autopull=True, pull_thresh=16)
+def reset():
+    set(pins, 1)
+    nop()		[31]
+    set(pins, 0)
+    nop()		[31]
     
 # Set Pin 3 output drive strength to be 12mA, slew to be fast. Refer to rp2040 datasheet, PADS_BANK0
 machine.mem32[0x4001c010]=0x7f
@@ -78,8 +85,8 @@ machine.mem32[0x4001c010]=0x7f
 # Open a file from the Pico's onchip flash memory
 fd = open("output.txt", "a")
 
-#Start flag
-start_flag = 0
+#Reset_Flag
+rst_flag = 0
 
 # Bit String
 bit_string = 0
@@ -153,13 +160,27 @@ def calc_glitch_cycles(duration):
 
 
 def filter(data):
-    data = data.replace("i = 10 j = 100 ctrl = 1000 \n\r", '')
+    data = data.replace("i = 5 j = 0 ctrl = 5 \n\r", '')
     return data
 
 
 #while True:
-for i in range (260, 280, 20): #glitch duration. Accurate to ~20ns
-    for j in range(380, 1000, 20): #delay duration. Accurate to ~20ns
+for i in range (240, 260, 20): #glitch duration. Accurate to ~20ns
+    for j in range(200, 2020, 20): #delay duration. Accurate to ~20ns
+        print(rst_flag)
+        '''
+        if (rst_flag):
+            print("Resetting")
+            sm = StateMachine(0, reset, freq = 2_000, set_base = Pin(3))
+            sm.active(1)
+            
+            time.sleep(1)
+            
+            sm.active(0)
+            rst_flag = 0
+        '''
+        
+
         t_end = time.time() + 5
         #fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
         
@@ -187,11 +208,12 @@ for i in range (260, 280, 20): #glitch duration. Accurate to ~20ns
         sm = StateMachine(0, drop_voltage, freq = 100_000_000, set_base = Pin(3), in_base = Pin(4))
         sm.put(bit_string)
         sm.active(1)
-        start_flag = 1
+        rst_flag = 1
 
         while time.time() < t_end:
             # Prints output of STM32 to Thonny IDE
             if uart.any():
+                rst_flag = 0
                 try:
                     # Removes the trailing empty spaces and decodes the string received
                     data = uart.read().decode('ascii').rstrip('\xff').rstrip('\x00')
@@ -199,23 +221,20 @@ for i in range (260, 280, 20): #glitch duration. Accurate to ~20ns
                     # Prints data to terminal
                     print(data)
                     
-                    if (data != "i = 10 j = 100 ctrl = 1000 \n\r"):
+                    if (data != "i = 5 j = 0 ctrl = 5 \n\r" and data != "STM Starting...\n\r"):
                         fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
                         print("Writing")
                         fd.write(data)
                     
                     # Removes the expected data and only adds abnormal data to the file
-                    data = filter(data)
-                    if (len(data) > 0):
-                        fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
+                    #data = filter(data)
+                    #if (len(data) > 0):
+                       # fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
                         #print("Writing")
-                        print(data)
-                        fd.write(data)
+                        #print(data)
+                        #fd.write(data)
 
                 except:
                     data = uart.read()
                     print(data)
-
-
-
 
