@@ -6,11 +6,14 @@ from rp2 import PIO, asm_pio, StateMachine
 @asm_pio(set_init = rp2.PIO.OUT_LOW)
 def drop_voltage():
     
+    #nop()		[30]
+    set(x, 31)
     #Set Pin to High
     set(pins, 1)	
     
-    #Delay
-    nop()	[15]
+    label("glitch_timing")
+    nop()
+    jmp(x_dec, "glitch_timing")
     '''
     set(x, 31)
     label("delay_high_outer")

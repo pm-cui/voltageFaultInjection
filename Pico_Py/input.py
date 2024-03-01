@@ -12,7 +12,10 @@ def drop_voltage():
 
     
     
-    
+def filter(data):
+    data = data.replace("i = 10 j = 100 ctrl = 1000 \n\r", 'meep')
+    return data
+
 
 led = Pin("LED", Pin.OUT)
 led.value(1)
@@ -22,9 +25,13 @@ uart.init(bits=8, parity=None, stop=1)
 
 
 sm = StateMachine(0, drop_voltage, freq = 2_000, set_base = Pin(3), in_base = Pin(4))
-sm.active(1)
+#sm.active(1)
 
 while True:
-    if uart.any(): 
-        data = uart.read()
-        print(data)
+    if uart.any():
+        try:
+            data = uart.read().decode('ascii').rstrip('\xff').rstrip('\x00')
+            print(data)
+        except:
+            data = uart.read()
+            print(data)

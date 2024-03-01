@@ -10,4 +10,5 @@ fd.close()
 
 
 #Empties the file
-#open("output.txt", 'w').close()
+open("output.txt", 'w').close()
+
