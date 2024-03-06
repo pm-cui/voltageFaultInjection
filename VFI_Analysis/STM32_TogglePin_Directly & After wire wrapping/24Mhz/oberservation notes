@@ -1,0 +1,9 @@
+200ns:
+No glitch at all
+
+210ns:
+2700 no glitch
+2710 and 2720 glitch present
+
+220ns:
+Glitch present but crashes soon after
