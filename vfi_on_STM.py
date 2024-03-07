@@ -134,8 +134,8 @@ def calc_glitch_cycles(duration):
 
 
 while True:
-    for i in range (180, 220, 20): #glitch duration. Accurate to ~20ns
-        for j in range(9500, 12000, 20): #delay duration. Accurate to ~20ns
+    for i in range (180, 200, 20): #glitch duration. Accurate to ~20ns
+        for j in range(9000, 12000, 20): #delay duration. Accurate to ~20ns
 
             t_end = time.time() + 2
             #fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
@@ -202,16 +202,20 @@ while True:
                     # ACK is received
                     print("Glitched")
                     print(received)
+                    
+                    #stop the SM from glitching
+                    sm.active(0)
+                    
                     #Vary this from 0x1ffff000 to 0x1fffffff
                     cmd = struct.pack('B', 0x1f)
                     uart.write(cmd)
                     cmd = struct.pack('B', 0xff)
                     uart.write(cmd)
-                    cmd = struct.pack('B', 0xf4)
+                    cmd = struct.pack('B', 0xf7)
                     uart.write(cmd)
                     cmd = struct.pack('B', 0x00)
                     uart.write(cmd)
-                    cmd = struct.pack('B', 0x14)
+                    cmd = struct.pack('B', 0x17)
                     uart.write(cmd)
                     
                     received, = struct.unpack('b', uart.read())
