@@ -37,6 +37,13 @@
    - Boot0 connected to 3v3 of Pico
    - 3v3 of STM connected to MOSFET's output
 - RDP is set
+- CN4 Pin connection:
+   - 1) VDD
+     2) PA14
+     3) Grd
+     4) PA13
+     5) NRST
+   - Connected 3v3 to VDD too
       
 
 ## Current Issues 
