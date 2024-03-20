@@ -171,8 +171,8 @@ def filter(data):
 
 datapoints = 0
 
-i = 200
-j = 2700
+i = 140
+j = 2740
 glitch_cycles = calc_glitch_cycles(i)
 bit_string = int(glitch_cycles) << 10		#Logical shift left by 10 bits
 print(glitch_cycles)
@@ -232,7 +232,7 @@ while datapoints <= 1000:
         print("Reset")
         sm = StateMachine(0, reset, freq = 2_000, set_base = Pin(3))
         sm.active(1)
-        time.sleep(1)
+        time.sleep(0.5)
         sm.active(0)
         
         reset_counter = reset_counter + 1
@@ -243,7 +243,8 @@ while datapoints <= 1000:
         sm.active(1)
         
 
-
+test = successful_glitches - reset_counter
 print(f"Success: {successful_glitches}")
 print(f"Resets: {reset_counter}")
+print(f"Successful Glitches: {test}")
 
