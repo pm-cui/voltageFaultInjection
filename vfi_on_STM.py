@@ -232,8 +232,9 @@ while True:
                 except:
                     print("reset")
                     NRST.value(0)
-                    time.sleep(1)
+                    time.sleep(0.5)
                     NRST.value(1)
+                    time.sleep(0.5)
                     cmd = struct.pack('B', 0x7f)
                     uart.write(cmd)
                     received = struct.unpack('b', uart.read())
