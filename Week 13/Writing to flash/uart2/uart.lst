@@ -1,0 +1,254 @@
+
+uart.elf:     file format elf32-littlearm
+uart.elf
+architecture: armv7, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x0801fc35
+
+Program Header:
+    LOAD off    0x00000000 vaddr 0x08010000 paddr 0x08010000 align 2**16
+         filesz 0x0000fd00 memsz 0x0000fd00 flags r-x
+private flags = 0x5000200: [Version5 EABI] [soft-float ABI]
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000100  0801fc00  0801fc00  0000fc00  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  08020c00  08020c00  0000fd00  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000000  08020c00  08020c00  00000000  2**0
+                  ALLOC
+  3 .debug_info   00000295  00000000  00000000  0000fd00  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  4 .debug_abbrev 00000114  00000000  00000000  0000ff95  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  5 .debug_aranges 00000028  00000000  00000000  000100a9  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  6 .debug_ranges 00000018  00000000  00000000  000100d1  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  7 .debug_line   000000fb  00000000  00000000  000100e9  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  8 .debug_str    000001c9  00000000  00000000  000101e4  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  9 .comment      00000033  00000000  00000000  000103ad  2**0
+                  CONTENTS, READONLY
+ 10 .ARM.attributes 0000002d  00000000  00000000  000103e0  2**0
+                  CONTENTS, READONLY
+ 11 .debug_frame  00000038  00000000  00000000  00010410  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+SYMBOL TABLE:
+0801fc00 l    d  .text	00000000 .text
+08020c00 l    d  .data	00000000 .data
+08020c00 l    d  .bss	00000000 .bss
+00000000 l    d  .debug_info	00000000 .debug_info
+00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_ranges	00000000 .debug_ranges
+00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .debug_frame	00000000 .debug_frame
+00000000 l    df *ABS*	00000000 uart.c
+00000000 g       *ABS*	00000000 __data_size
+0801fd00 g       .text	00000000 _sidata
+0801fd00 g       .text	00000000 _etext
+08020c00 g       .bss	00000000 _sbss
+00000000 g       *ABS*	00000000 __bss_size
+08020c00 g       .data	00000000 _sdata
+08020c00 g       .bss	00000000 _ebss
+0801fc00 g     O .text	00000008 vector_table
+0801fc34 g     F .text	000000cc main
+00000100 g       *ABS*	00000000 __text_size
+08020c00 g       .data	00000000 _edata
+0801fc08 g     F .text	0000002c set_system_clock_to_8Mhz
+
+
+
+Disassembly of section .text:
+
+0801fc00 <vector_table>:
+ 801fc00:	00 50 00 20 35 fc 01 08                             .P. 5...
+
+0801fc08 <set_system_clock_to_8Mhz>:
+*/
+
+void set_system_clock_to_8Mhz(void)
+{
+	// Enable HSI
+	RCC->CR |= 1;
+ 801fc08:	4b09      	ldr	r3, [pc, #36]	; (801fc30 <set_system_clock_to_8Mhz+0x28>)
+ 801fc0a:	681b      	ldr	r3, [r3, #0]
+ 801fc0c:	4a08      	ldr	r2, [pc, #32]	; (801fc30 <set_system_clock_to_8Mhz+0x28>)
+ 801fc0e:	f043 0301 	orr.w	r3, r3, #1
+ 801fc12:	6013      	str	r3, [r2, #0]
+	// Wait untill HSI settles down
+	while (!(RCC->CR & (1 << 1)));
+ 801fc14:	bf00      	nop
+ 801fc16:	4b06      	ldr	r3, [pc, #24]	; (801fc30 <set_system_clock_to_8Mhz+0x28>)
+ 801fc18:	681b      	ldr	r3, [r3, #0]
+ 801fc1a:	f003 0302 	and.w	r3, r3, #2
+ 801fc1e:	2b00      	cmp	r3, #0
+ 801fc20:	d0f9      	beq.n	801fc16 <set_system_clock_to_8Mhz+0xe>
+	
+	// Finally, choose HSI as the system clock
+	RCC->CFGR |= (0b00 << 0);
+ 801fc22:	4b03      	ldr	r3, [pc, #12]	; (801fc30 <set_system_clock_to_8Mhz+0x28>)
+ 801fc24:	4a02      	ldr	r2, [pc, #8]	; (801fc30 <set_system_clock_to_8Mhz+0x28>)
+ 801fc26:	685b      	ldr	r3, [r3, #4]
+ 801fc28:	6053      	str	r3, [r2, #4]
+
+}
+ 801fc2a:	bf00      	nop
+ 801fc2c:	4770      	bx	lr
+ 801fc2e:	bf00      	nop
+ 801fc30:	40021000 	.word	0x40021000
+
+0801fc34 <main>:
+
+/*************************************************
+* Main code starts from here
+*************************************************/
+int32_t main(void)
+{
+ 801fc34:	b500      	push	{lr}
+ 801fc36:	b087      	sub	sp, #28
+	// Copy LMA to VMA for data section
+	//copy_data();
+
+	// Set clock to 8 MHz
+	set_system_clock_to_8Mhz();
+ 801fc38:	f7ff ffe6 	bl	801fc08 <set_system_clock_to_8Mhz>
+	*/
+	
+	
+	
+	// Make GPIOA Pin 9,10 (PA9, PA10) alternate-function output (0b1010)
+	GPIOA->CRH &= 0xFFFFF00F;
+ 801fc3c:	4b2d      	ldr	r3, [pc, #180]	; (801fcf4 <main+0xc0>)
+ 801fc3e:	685b      	ldr	r3, [r3, #4]
+ 801fc40:	4a2c      	ldr	r2, [pc, #176]	; (801fcf4 <main+0xc0>)
+ 801fc42:	f423 637f 	bic.w	r3, r3, #4080	; 0xff0
+ 801fc46:	6053      	str	r3, [r2, #4]
+	GPIOA->CRH |= 0x00000BB0;
+ 801fc48:	4b2a      	ldr	r3, [pc, #168]	; (801fcf4 <main+0xc0>)
+ 801fc4a:	685b      	ldr	r3, [r3, #4]
+ 801fc4c:	4a29      	ldr	r2, [pc, #164]	; (801fcf4 <main+0xc0>)
+ 801fc4e:	f443 633b 	orr.w	r3, r3, #2992	; 0xbb0
+ 801fc52:	6053      	str	r3, [r2, #4]
+	
+
+	// Enable USART
+	//USART1->CR1 |= (1 << 13);
+	// Word length - leave default (8 data)
+	USART1->CR1 |= (0 << 12);
+ 801fc54:	4b28      	ldr	r3, [pc, #160]	; (801fcf8 <main+0xc4>)
+ 801fc56:	4a28      	ldr	r2, [pc, #160]	; (801fcf8 <main+0xc4>)
+ 801fc58:	68db      	ldr	r3, [r3, #12]
+ 801fc5a:	60d3      	str	r3, [r2, #12]
+	//USART1->CR2 |= (0b00 << 12);
+	// Baud rate
+	// BRR should be 52 + 1/12 for 9600 baud rate
+	// Thus manista is 52 (0x034) and fraction is 12 (0x1) (1/16)
+	// Making it 0x0341
+	USART1->BRR = 0x0341;
+ 801fc5c:	4b26      	ldr	r3, [pc, #152]	; (801fcf8 <main+0xc4>)
+ 801fc5e:	f240 3241 	movw	r2, #833	; 0x341
+ 801fc62:	609a      	str	r2, [r3, #8]
+	// Transmitter enable
+	//USART1->CR1 |= (1 << 3);
+	// Receiver enable
+	//USART1->CR1 |= (1 << 2);
+
+	volatile uint32_t *addr = (uint32_t*) 0x08000000; 
+ 801fc64:	f04f 6300 	mov.w	r3, #134217728	; 0x8000000
+ 801fc68:	9305      	str	r3, [sp, #20]
+	uint32_t value = *addr;
+ 801fc6a:	9b05      	ldr	r3, [sp, #20]
+ 801fc6c:	681b      	ldr	r3, [r3, #0]
+ 801fc6e:	9304      	str	r3, [sp, #16]
+	
+	// for some reason, when nrst is pressed, the first byte does not get transmitted
+	// therefore, this is a placeholder to make sure that data does not get lost during testing
+	// Might remove this later if needed
+	
+	value_8bit = (value>>24);
+ 801fc70:	9b04      	ldr	r3, [sp, #16]
+ 801fc72:	0e1b      	lsrs	r3, r3, #24
+ 801fc74:	f88d 3007 	strb.w	r3, [sp, #7]
+	USART1->DR |= value_8bit;
+ 801fc78:	4b1f      	ldr	r3, [pc, #124]	; (801fcf8 <main+0xc4>)
+ 801fc7a:	685a      	ldr	r2, [r3, #4]
+ 801fc7c:	f89d 3007 	ldrb.w	r3, [sp, #7]
+ 801fc80:	491d      	ldr	r1, [pc, #116]	; (801fcf8 <main+0xc4>)
+ 801fc82:	4313      	orrs	r3, r2
+ 801fc84:	604b      	str	r3, [r1, #4]
+	while(!(USART1->SR & (1 << 6)));
+ 801fc86:	bf00      	nop
+ 801fc88:	4b1b      	ldr	r3, [pc, #108]	; (801fcf8 <main+0xc4>)
+ 801fc8a:	681b      	ldr	r3, [r3, #0]
+ 801fc8c:	f003 0340 	and.w	r3, r3, #64	; 0x40
+ 801fc90:	2b00      	cmp	r3, #0
+ 801fc92:	d0f9      	beq.n	801fc88 <main+0x54>
+	
+	while(1)
+	{
+		for(int i=1000000; i>0; i--);
+ 801fc94:	4b19      	ldr	r3, [pc, #100]	; (801fcfc <main+0xc8>)
+ 801fc96:	9303      	str	r3, [sp, #12]
+ 801fc98:	e002      	b.n	801fca0 <main+0x6c>
+ 801fc9a:	9b03      	ldr	r3, [sp, #12]
+ 801fc9c:	3b01      	subs	r3, #1
+ 801fc9e:	9303      	str	r3, [sp, #12]
+ 801fca0:	9b03      	ldr	r3, [sp, #12]
+ 801fca2:	2b00      	cmp	r3, #0
+ 801fca4:	dcf9      	bgt.n	801fc9a <main+0x66>
+		
+		for (int i = 4; i > 0; i--){
+ 801fca6:	2304      	movs	r3, #4
+ 801fca8:	9302      	str	r3, [sp, #8]
+ 801fcaa:	e018      	b.n	801fcde <main+0xaa>
+			value_8bit = (value >> (8*(i-1)) );
+ 801fcac:	9b02      	ldr	r3, [sp, #8]
+ 801fcae:	3b01      	subs	r3, #1
+ 801fcb0:	00db      	lsls	r3, r3, #3
+ 801fcb2:	9a04      	ldr	r2, [sp, #16]
+ 801fcb4:	fa22 f303 	lsr.w	r3, r2, r3
+ 801fcb8:	f88d 3007 	strb.w	r3, [sp, #7]
+			USART1->DR |= value_8bit;
+ 801fcbc:	4b0e      	ldr	r3, [pc, #56]	; (801fcf8 <main+0xc4>)
+ 801fcbe:	685a      	ldr	r2, [r3, #4]
+ 801fcc0:	f89d 3007 	ldrb.w	r3, [sp, #7]
+ 801fcc4:	490c      	ldr	r1, [pc, #48]	; (801fcf8 <main+0xc4>)
+ 801fcc6:	4313      	orrs	r3, r2
+ 801fcc8:	604b      	str	r3, [r1, #4]
+			while(!(USART1->SR & (1 << 6)));
+ 801fcca:	bf00      	nop
+ 801fccc:	4b0a      	ldr	r3, [pc, #40]	; (801fcf8 <main+0xc4>)
+ 801fcce:	681b      	ldr	r3, [r3, #0]
+ 801fcd0:	f003 0340 	and.w	r3, r3, #64	; 0x40
+ 801fcd4:	2b00      	cmp	r3, #0
+ 801fcd6:	d0f9      	beq.n	801fccc <main+0x98>
+		for (int i = 4; i > 0; i--){
+ 801fcd8:	9b02      	ldr	r3, [sp, #8]
+ 801fcda:	3b01      	subs	r3, #1
+ 801fcdc:	9302      	str	r3, [sp, #8]
+ 801fcde:	9b02      	ldr	r3, [sp, #8]
+ 801fce0:	2b00      	cmp	r3, #0
+ 801fce2:	dce3      	bgt.n	801fcac <main+0x78>
+		}
+		
+		addr = addr + 1;
+ 801fce4:	9b05      	ldr	r3, [sp, #20]
+ 801fce6:	3304      	adds	r3, #4
+ 801fce8:	9305      	str	r3, [sp, #20]
+		value = *addr;
+ 801fcea:	9b05      	ldr	r3, [sp, #20]
+ 801fcec:	681b      	ldr	r3, [r3, #0]
+ 801fcee:	9304      	str	r3, [sp, #16]
+		for(int i=1000000; i>0; i--);
+ 801fcf0:	e7d0      	b.n	801fc94 <main+0x60>
+ 801fcf2:	bf00      	nop
+ 801fcf4:	40010800 	.word	0x40010800
+ 801fcf8:	40013800 	.word	0x40013800
+ 801fcfc:	000f4240 	.word	0x000f4240
