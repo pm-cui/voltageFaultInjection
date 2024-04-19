@@ -1,0 +1,765 @@
+System startup
+
+U-Boot 2010.06-svn31947 (Apr 04 2019 - 09:26:50)
+
+Hit ctrl+u to stop autoboot:  1  0 
+### CRAMFS load complete: 3169048 bytes loaded to 0x82000000
+   Verifying RSA ... OK
+## Booting kernel from Legacy Image at 82000000 ...
+   Loading Kernel Image ... OK
+OK
+
+Starting kernel ...
+
+[    2.632924] init(1) called reboot syscall, cmd: 0x0.
+Thu Jan  1 00:00:02 UTC 1970
+
+mv: can't rename 'ubi*': No such file or directory
+Load modules [ OK ]
+Starting udev:      [ OK ]
+/usr/bin/hrsaverify: verify "/tmp/start.sh" success!
+/usr/bin/hrsaverify: truncate "/tmp/start.sh" to 6000(1770 hex) success!
+
+
+sdbg: serverip:192.0.0.128
+fastboot is 
+language is 1
+devtype is ad23
+/
+----------<1> tar guir webs ----------
+BusyBox v1.2.1 Protect Shell (psh)
+Enter 'help' for a list of davinci system commands.
+
+# ----------<2> show logo ----------
+mv: can't rename '/home/app/exec/ss': No such file or directory
+chmod: /usr/bin/dvrCmd/dvrtools: No such file or directory
+chmod: /dev/ttyS3: No such file or directory
+load K72 ok
+/
+----------<4> del no use res ----------
+cp: can't stat '/home/app/hisi/modules/setDebug_mux': No such file or directory
+iSCSI daemon with pid=220 started!start savelog proc!!!!!
+iqn name [iqn.2006.04.fineac.42-73-a6-dd-ba-86.alvin-iscsi-initiator] 
+pdev_hard_info->ataCtrlNums=1
+file:src/pal_api.c,line:827, pal_module_init successfully
+file:src/pal_api.c,line:74, *********undefine fun:pal_add_proc_info********* 
+read: pDevCfg->cfgHead.paraVersionis [0x170816]; 
+read: iCkSum is [0x82d];  pDevCfg->cfgHead.paraChecksum is [0x82d]
+scriptCmd: ./load -i 0.
+/
+master load dsp resource ... 
+a is ad23
+DS_7204HQK_K
+mmz allot DS_7204HQK_K
+
+0x120F0800: 0x00000140 --> 0x00000050 
+[END]
+close K72A DLL!
+
+0x120401e0: 0x00000003 --> 0x00000003 
+[END]
+
+0x120401ec: 0x00000003 --> 0x00000003 
+[END]
+
+0x120401e4: 0x00000030 --> 0x00000020 
+[END]
+
+0x120401F0: 0x00000030 --> 0x00000020 
+[END]
+close tde alpha filter
+loadAd tp2823:0, tp2833C:0, tp2827C:0, tp2828:0, tp2831:0, tp2830:1,nvp6134:0, nvp6134b:0, reg_fe:0, reg_ff:0
+cmdBuf:insmod extdrv/tp2823.ko
+insert audio
+master rm dsp resource ... 
+after master load dsp resource ... 
+file:src/pal_api.c,line:772, pal_module_init has been called
+file:src/pal_api.c,line:74, *********undefine fun:pal_add_proc_info********* 
+[ERR] remove failed !!!
+
+[DVR_MAIN_PROCESS]enter dvr_main time[1713362490]
+
+[DVR_MAIN_PROCESS][0][dvr_threadpool_init] start!!,time[1713362490]!!
+stack[262144-2097152], poolnum[4]
+
+[DVR_MAIN_PROCESS][0][dvr_threadpool_init] finish,iRet[0]!!,time[1713362490],cost[0]s !!
+
+[DVR_MAIN_PROCESS][1][dvr_startup_common_res_init] start!!,time[1713362490]!!
+/*********************init_global_error_lib*/, init_global_error_lib start!
+:1
+
+[DVR_MAIN_PROCESS][1][dvr_startup_common_res_init] finish,iRet[0]!!,time[1713362490],cost[0]s !!
+
+[DVR_MAIN_PROCESS][2][dvr_startup_arch_watchdog_init] start!!,time[1713362490]!!
+fun:hisi_watchdog_init, line:7164 hisi_watchdog_init(/dev/watchdog, 24) ok iDogTimeOut:25 Sec!
+
+[DVR_MAIN_PROCESS][2][dvr_startup_arch_watchdog_init] finish,iRet[0]!!,time[1713362490],cost[0]s !!
+
+[DVR_MAIN_PROCESS][3][watchdogInit] start!!,time[1713362490]!!
+
+[DVR_MAIN_PROCESS][3][watchdogInit] finish,iRet[0]!!,time[1713362490],cost[0]s !!
+
+[DVR_MAIN_PROCESS][4][dvr_startup_etherif_init] start!!,time[1713362490]!!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~phy on eth0 is link down
+:1
+t1_api_start
+:wait storage [2] and gui[2] and hicore[2] and ipcm[0]
+write phy addr: 0x1  reg: 0x0  value : 0x8000
+
+eth_up_down up failed and errno [0]and ret[0]
+~~~~~~~~~reset [netcard]eth0 suc1,reset count[3]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[DVR_MAIN_PROCESS][4][dvr_startup_etherif_init] finish,iRet[0]!!,time[1713362493],cost[3]s !!
+
+[DVR_MAIN_PROCESS][5][fan_control_start] start!!,time[1713362493]!!
+
+[DVR_MAIN_PROCESS][5][fan_control_start] finish,iRet[0]!!,time[1713362493],cost[0]s !!
+
+[DVR_MAIN_PROCESS][6][dvr_startup_check_md5] start!!,time[1713362493]!!
+
+[DVR_MAIN_PROCESS][6][dvr_startup_check_md5] finish,iRet[0]!!,time[1713362493],cost[0]s !!
+
+[DVR_MAIN_PROCESS][7][pal_init_version_bin_file] start!!,time[1713362493]!!
+
+[DVR_MAIN_PROCESS][7][pal_init_version_bin_file] finish,iRet[0]!!,time[1713362493],cost[0]s !!
+
+[DVR_MAIN_PROCESS][8][dvr_startup_poe_etherif_init] start!!,time[1713362493]!!
+
+[DVR_MAIN_PROCESS][8][dvr_startup_poe_etherif_init] finish,iRet[0]!!,time[1713362493],cost[0]s !!
+
+[DVR_MAIN_PROCESS][9][security_key_work_init] start!!,time[1713362493]!!
+
+[DVR_MAIN_PROCESS][9][security_key_work_init] finish,iRet[0]!!,time[1713362493],cost[0]s !!
+
+[DVR_MAIN_PROCESS][10][dvr_startup_encode_chan_num_init] start!!,time[1713362493]!!
+
+[DVR_MAIN_PROCESS][10][dvr_startup_encode_chan_num_init] finish,iRet[0]!!,time[1713362493],cost[0]s !!
+
+[DVR_MAIN_PROCESS][11][dvr_startup_chan_osd_init] start!!,time[1713362493]!!
+
+[DVR_MAIN_PROCESS][11][dvr_startup_chan_osd_init] finish,iRet[0]!!,time[1713362493],cost[0]s !!
+
+[DVR_MAIN_PROCESS][12][cfg_module_param_init] start!!,time[1713362493]!!
+init_lzma_mem alloc size 1048576
+file:src/net/cfg_net_init.c,line:4097, info: register cfgNetIf success
+file:src/net/cfg_net_init.c,line:4117, info: register cfgNetSrv success
+file:src/net/cfg_net_init.c,line:4137, info: register cfgNetNui success
+file:src/pi/cfg_pi_init.c,line:600, info: register cfgPiIf success
+cfg_data_block_register successfullyfile:src/storage/cfg_third_cloud_init.c,line:526, cfg_data_block_register successfully
+<<<<<<<=====LN:416,FN:prev_get_value_from_block,uiVersion=0x191225=============>>>>>>
+<<<<<<<=====LN:473,FN:user_get_value_from_block,uiVersion=1643045=============>>>>>>
+<<<<<<<=====LN:449,FN:sys_get_value_from_block,uiVersion=1643045=============>>>>>>
+<<<<<<<=====LN:2853,FN:alarm_base_get_value_from_block,uiVersion=1643045=============>>>>>>
+<<<<<<<=====LN:3038,FN:alarm_exception_get_value_from_block,uiVersion=1643045=============>>>>>>
+<<<<<<<=====LN:3091,FN:alarm_ptz_get_value_from_block,uiVersion=1643045=============>>>>>>
+:wait storage [2] and gui[2] and hicore[2] and ipcm[0]
+########cfg_patch_reserve_cfg out!##############
+
+[DVR_MAIN_PROCESS][12][cfg_module_param_init] finish,iRet[0]!!,time[1713362501],cost[8]s !!
+
+[DVR_MAIN_PROCESS][13][dvr_startup_toe_init] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][13][dvr_startup_toe_init] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][14][dvr_startup_set_psh_passwd] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][14][dvr_startup_set_psh_passwd] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][15][dvr_startup_rs232_init] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][15][dvr_startup_rs232_init] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][16][dvr_startup_net_if_init] start!!,time[1713362501]!!
+=================net_if_set_mtu iRet:[0]
+set net mask ioctl error:: Cannot assign requested address
+
+[DVR_MAIN_PROCESS][16][dvr_startup_net_if_init] finish,iRet[-1]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][17][dvr_startup_adjust_reso_param] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][17][dvr_startup_adjust_reso_param] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][18][sys_manage_filefd_init] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][18][sys_manage_filefd_init] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][19][dvr_startup_adjust_prev_ability] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][19][dvr_startup_adjust_prev_ability] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][20][dvr_startup_set_upg_partition_protect] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][20][dvr_startup_set_upg_partition_protect] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][21][sys_update_shadow] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][21][sys_update_shadow] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][22][init_sps_pps_res] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][22][init_sps_pps_res] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][23][dvr_startup_alarm_count_res_init] start!!,time[1713362501]!!
+
+[DVR_MAIN_PROCESS][23][dvr_startup_alarm_count_res_init] finish,iRet[0]!!,time[1713362501],cost[0]s !!
+
+[DVR_MAIN_PROCESS][24][dvr_startup_dsp_init] start!!,time[1713362501]!!
+fun:hisi_dsp_init, line:3223 --------------init dsp --------------------
+fun:hisi_main_dsp_init, line:2343 Device Main Vo Chan is  2[0]
+menuDispChan = 0
+Chan[0] Sup Borrow MMZ memory to meet ana net pool[2]!
+Chan[0] Sup Borrow MMZ memory to meet ana net pool[3]!
+Chan[1] Sup Borrow MMZ memory to meet ana net pool[2]!
+Chan[1] Sup Borrow MMZ memory to meet ana net pool[3]!
+Chan[2] Sup Borrow MMZ memory to meet ana net pool[2]!
+Chan[2] Sup Borrow MMZ memory to meet ana net pool[3]!
+Chan[3] Sup Borrow MMZ memory to meet ana net pool[2]!
+Chan[3] Sup Borrow MMZ memory to meet ana net pool[3]!
+Chan[0] Sup Borrow MMZ memory to meet ipc net pool[6]!
+Chan[0] Sup Borrow MMZ memory to meet ipc net pool[7]!
+Chan[0] Sup Borrow MMZ memory to meet ezviz aes record pool!
+Chan[1] Sup Borrow MMZ memory to meet ezviz aes record pool!
+Chan[2] Sup Borrow MMZ memory to meet ezviz aes record pool!
+Chan[3] Sup Borrow MMZ memory to meet ezviz aes record pool!
+hisi_main_dsp_init | src/hisi_dsp.c:2977  e==============, packetType = 0x5, subPacketType= 0x4
+:wait storage [2] and gui[2] and hicore[2] and ipcm[0]
+<DSP>vca DspVcaInitMetaDataPack: ok
+<DSP_CAP> [### Init capture picture ok! ###]
+<DSP>vca Init vca success
+<DSP>vca  DspVcaScdInit chanNum = 0
+<DSP>vca DspVcaScdInit OK!
+<DSP>vca smdChan:0
+<DSP>vca smdChan:1
+hisi_main_dsp_init:DSPINITPARA=3177416
+************g_pDspInitPara[0xb5c39008], menuShareBuf 0[0xb5cb8394, pAddr=0x9438a000, vAddr=0xaea5d000, w:1024,h768,p:1024] 1[0xb5cb83ac, pAddr=0x0, vAddr=0x0, w:0,h0,p:0], 
+hisi_freelogo_buffer is succsse 0 
+fun:hisi_dsp_init, line:3245 ------ dsp is init Ok iRetVal:0---------
+!!!!!!!!!!!!!!!!!!!!!!!!!DSP Init Ok!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[DVR_MAIN_PROCESS][24][dvr_startup_dsp_init] finish,iRet[0]!!,time[1713362505],cost[4]s !!
+
+[DVR_MAIN_PROCESS][25][dvr_startup_hdmi_self_adaption] start!!,time[1713362505]!!
+
+[DVR_MAIN_PROCESS][25][dvr_startup_hdmi_self_adaption] finish,iRet[0]!!,time[1713362505],cost[0]s !!
+
+[DVR_MAIN_PROCESS][26][dvr_startup_time_set] start!!,time[1713362505]!!
+stime start 1713362505
+stime finish 1713362505
+
+[DVR_MAIN_PROCESS][26][dvr_startup_time_set] finish,iRet[-1]!!,time[1713362505],cost[0]s !!
+
+[DVR_MAIN_PROCESS][27][sc_sadp_set_sys_info] start!!,time[1713362505]!!
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+
+[DVR_MAIN_PROCESS][27][sc_sadp_set_sys_info] finish,iRet[-1]!!,time[1713362507],cost[2]s !!
+
+[DVR_MAIN_PROCESS][28][dvr_startup_rs485_sem_init] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][28][dvr_startup_rs485_sem_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][29][dvr_startup_ptzcoaxial_sem_init] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][29][dvr_startup_ptzcoaxial_sem_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][30][initPlayDspDecResCtrl] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][30][initPlayDspDecResCtrl] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][31][dvr_startup_user_security_init] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][31][dvr_startup_user_security_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][32][pic_module_init] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][32][pic_module_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][33][init_cap_pic_buf] start!!,time[1713362507]!!
+start init_cap_pic_buf!!!
+init cap pic buf success!!![0x3650e38],size[1024]
+
+[DVR_MAIN_PROCESS][33][init_cap_pic_buf] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][34][dvr_startup_ipc_set_chan_map] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][34][dvr_startup_ipc_set_chan_map] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][35][prev_module_res_init] start!!,time[1713362507]!!
+prev_start_prev  debugdebug!!!!!!!!!!!!!!!!!!
+
+
+[DVR_MAIN_PROCESS][35][prev_module_res_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][36][dvr_startup_backup_res_init] start!!,time[1713362507]!!
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xabcdb000, PhyAddr: 0x991c1000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xabc71000, PhyAddr: 0x9922b000
+
+[DVR_MAIN_PROCESS][36][dvr_startup_backup_res_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][37][dvr_startup_ipc_res_init] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][37][dvr_startup_ipc_res_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][38][play_init_compent] start!!,time[1713362507]!!
+[play_set_search_param][+++] 
+[play_set_search_param][---] 
+[play_set_search_param][+++] 
+[play_set_search_param][---] 
+[play_set_search_param][+++] 
+[play_set_search_param][---] 
+[play_set_search_param][+++] 
+[play_set_search_param][---] 
+
+[DVR_MAIN_PROCESS][38][play_init_compent] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][39][dvr_startup_streambuf_init] start!!,time[1713362507]!!
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xabb6f000, PhyAddr: 0x99295000
+
+[DVR_MAIN_PROCESS][39][dvr_startup_streambuf_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][40][dvr_startup_ptzlib_init] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][40][dvr_startup_ptzlib_init] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][41][dvr_startup_main_sc] start!!,time[1713362507]!!
+
+[DVR_MAIN_SC_PROCESS]enter dvr_main_sc time[1713362507]
+
+[DVR_MAIN_PROCESS][41][dvr_startup_main_sc] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][42][dvr_startup_net_add_virtual_host_v1] start!!,time[1713362507]!!
+
+[DVR_MAIN_SC_PROCESS][0][dvr_startup_sc_wait_sc_status] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][42][dvr_startup_net_add_virtual_host_v1] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][43][dvr_startup_handle_pppoe_cfg] start!!,time[1713362507]!!
+wait storage [2] and gui[2]
+
+[DVR_MAIN_PROCESS][43][dvr_startup_handle_pppoe_cfg] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][44][dvr_startup_psh_start] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][44][dvr_startup_psh_start] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][45][start_drop_caches] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][45][start_drop_caches] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS][46][dvr_clear_caches_task] start!!,time[1713362507]!!
+
+[DVR_MAIN_PROCESS][46][dvr_clear_caches_task] finish,iRet[0]!!,time[1713362507],cost[0]s !!
+
+[DVR_MAIN_PROCESS]all func callback over!!, i[47],pFuncName[(nil)],pFuncCallback[(nil)]
+
+:1
+************** ETCFILEPATH=/home/app/1024_res/conf/1024x768.cfg ****************
+**************LoadEtcFile L1912 ****************
+************** pEtcFile=/home/app/1024_res/conf/1024x768.cfg ****************
+:1
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xab06b000, PhyAddr: 0x99397000
+[INFO][src/sqlite/dbBaseOpt.c #1069][@db_mem_binding_and_limit][@BR_STORAGE_]: db memory binging succeed buf address 0xaabaa008 , buf size 3 M iLimitSize 0 M !
+*****etc_ReadSection:L1841***********
+***** LoadEtcFile:L1951  petc->section_nr=339***************
+:wait storage [0] and gui[2] and hicore[0] and ipcm[0]
+LoadSystemCursorFromPng: Load bitmap error: /home/app/1024_res/sysres/cursor/4k_d_beam.png, iRet = -8!
+LoadSystemCursorFromPng: Load bitmap error: /home/app/1024_res/sysres/cursor/4k_g_drag.png, iRet = -8!
+LoadSystemDynCursor: Load bitmap error: /home/app/1024_res/sysres/cursor/4k_d_wait0.png, iRet = -8!
+read_rs485: recv data 1
+0 
+@@@@do not need poc test@@@@
+Device Is Ready
+T1 dep sc Is Ready
+
+[DVR_MAIN_SC_PROCESS][0][dvr_startup_sc_wait_sc_status] finish,iRet[0]!!,time[1713362512],cost[5]s !!
+
+[DVR_MAIN_SC_PROCESS][1][dvr_startup_sc_ready_for_preview] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][1][dvr_startup_sc_ready_for_preview] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][2][dvr_startup_sc_enable_485] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][2][dvr_startup_sc_enable_485] finish,iRet[-1]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][3][dvr_startup_sc_alloc_alarminfo_mem] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][3][dvr_startup_sc_alloc_alarminfo_mem] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][4][dvr_startup_sc_user_security_task] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][4][dvr_startup_sc_user_security_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][5][dvr_startup_sc_panellib_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][5][dvr_startup_sc_panellib_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][6][init_stream_pack_param] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][6][init_stream_pack_param] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][7][event2_global_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][7][event2_global_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][8][initPreviewPortPool] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][8][initPreviewPortPool] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][9][dvr_startup_sc_net_source_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][9][dvr_startup_sc_net_source_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][10][dvr_startup_sc_rtspserver_start] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][10][dvr_startup_sc_rtspserver_start] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][11][dvr_startup_sc_net_preview_init] start!!,time[1713362512]!!
+maxIPCcount[5] maxAnalogCount[4] 
+
+[DVR_MAIN_SC_PROCESS][11][dvr_startup_sc_net_preview_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][12][dvr_startup_sc_encode_chan_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][12][dvr_startup_sc_encode_chan_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][13][dvr_startup_sc_aes_param_init] start!!,time[1713362512]!!
+>>>init_set_Aes_Para mark4
+
+[DVR_MAIN_SC_PROCESS][13][dvr_startup_sc_aes_param_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][14][dvr_startup_sc_vi_record_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][14][dvr_startup_sc_vi_record_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][15][dvr_startup_sc_local_smd_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][15][dvr_startup_sc_local_smd_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][16][dvr_startup_sc_chan_res_init] start!!,time[1713362512]!!
+Load image error.
+Load image error.
+Load image error.
+Load image error.
+### key info: [ipcm_svc_init]ipcm svc inited. ###
+anaForbidNum=0
+ipcNum=1
+[DVR_MAIN_SC_PROCESS][16][dvr_startup_sc_chan_res_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][17][dvr_startup_sc_image_pool_init] start!!,time[1713362512]!!
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa4107000, PhyAddr: 0x994e2000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa40f6000, PhyAddr: 0x994f3000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa40e5000, PhyAddr: 0x99504000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa40d4000, PhyAddr: 0x99515000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa40c3000, PhyAddr: 0x99526000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa40b2000, PhyAddr: 0x99537000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa40a1000, PhyAddr: 0x99548000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa4090000, PhyAddr: 0x99559000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa407f000, PhyAddr: 0x9956a000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa406e000, PhyAddr: 0x9957b000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa405d000, PhyAddr: 0x9958c000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa404c000, PhyAddr: 0x9959d000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa403b000, PhyAddr: 0x995ae000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa402a000, PhyAddr: 0x995bf000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa4019000, PhyAddr: 0x995d0000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa4008000, PhyAddr: 0x995e1000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa3f87000, PhyAddr: 0x995f2000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa3f06000, PhyAddr: 0x99673000
+
+[DVR_MAIN_SC_PROCESS][17][dvr_startup_sc_image_pool_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][18][dvr_startup_sc_prev_module_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][18][dvr_startup_sc_prev_module_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][19][dvr_startup_sc_smart_event_init] start!!,time[1713362512]!!
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa3d44000, PhyAddr: 0x996f4000
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa3c02000, PhyAddr: 0x99776000
+
+[DVR_MAIN_SC_PROCESS][19][dvr_startup_sc_smart_event_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][20][init_dev_fr] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][20][init_dev_fr] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][21][dvr_startup_sc_time_init] start!!,time[1713362512]!!
+fun:hisi_get_mem_from_dsp, line:559 VirAddr: 0x0xa3b42000, PhyAddr: 0x997f8000
+
+[DVR_MAIN_SC_PROCESS][21][dvr_startup_sc_time_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][22][dvr_startup_sc_exception_ctrl_task] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][22][dvr_startup_sc_exception_ctrl_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][23][alarm_start_dsp_store_status_monitor_thread] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][23][alarm_start_dsp_store_status_monitor_thread] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][24][dvr_startup_sc_analog_smd_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][24][dvr_startup_sc_analog_smd_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][25][start_alarm_ctrl_task] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][25][start_alarm_ctrl_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][26][dvr_startup_sc_motiondetail_detect_task] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][26][dvr_startup_sc_motiondetail_detect_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][27][dvr_startup_sc_netplay_res_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][27][dvr_startup_sc_netplay_res_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][28][init_net_ctrl_task] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][28][init_net_ctrl_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][29][dvr_startup_sc_sdk_server_start] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][29][dvr_startup_sc_sdk_server_start] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][30][dvr_startup_sc_logo_tool_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][30][dvr_startup_sc_logo_tool_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][31][dvr_startup_sc_delete_ant_army_res] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][31][dvr_startup_sc_delete_ant_army_res] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][32][init_aux_raid_cfg] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][32][init_aux_raid_cfg] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][33][dvr_startup_sc_shipin7_start] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][33][dvr_startup_sc_shipin7_start] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][34][dvr_startup_sc_net_client_start] start!!,time[1713362512]!!
+ == g_struEzvizPb[i].bUsed[0] g_struEzvizPb[i] [10514f0] sid[0]
+ == g_struEzvizPb[i].bUsed[0] g_struEzvizPb[i] [1051564] sid[0]
+ == g_struEzvizPb[i].bUsed[0] g_struEzvizPb[i] [10515d8] sid[0]
+
+[DVR_MAIN_SC_PROCESS][34][dvr_startup_sc_net_client_start] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][35][dvr_startup_sc_encode_chan_start] start!!,time[1713362512]!!
+ == g_struEzvizPb[i].bUsed[0] g_struEzvizPb[i] [105164c] sid[0]
+
+[DVR_MAIN_SC_PROCESS][35][dvr_startup_sc_encode_chan_start] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][36][start_motdet_ctrl_task] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][36][start_motdet_ctrl_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][37][dvr_startup_sc_smd_ctrl_task] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][37][dvr_startup_sc_smd_ctrl_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][38][dvr_startup_sc_noplugins_web_init] start!!,time[1713362512]!!
+Call NET_websocket_daemon.
+ana_smd/smd_proc.c:smdCtrlTask:3049
+---Debug:Don't start Chan[5] local smd.ana_smd/smd_proc.c:smdCtrlTask:3049
+---Debug:Don't start Chan[6] local smd.ana_smd/smd_proc.c:smdCtrlTask:3049
+---Debug:Don't start Chan[7] local smd.ana_smd/smd_proc.c:smdCtrlTask:3049
+---Debug:Don't start Chan[8] local smd.ana_smd/smd_proc.c:smdCtrlTask:3049
+---Debug:Don't start Chan[9] local smd.
+[DVR_MAIN_SC_PROCESS][38][dvr_startup_sc_noplugins_web_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][39][dvr_startup_sc_web_server_start] start!!,time[1713362512]!!
+>>bNetProtocolOk[1] struNetProtocol.bHttp[1]
+start NET_websocket_ws_server
+[1713362512:8861] NOTICE: Initial logging level 7
+[1713362512:8862] NOTICE: Library version: 1.2
+[1713362512:8862] NOTICE:  Configured without extension support
+[1713362512:8863] NOTICE:  static allocation: 5476 + (12 x 8192 fds) = 103780 bytes
+[1713362512:8870] NOTICE:  canonical_hostname = dvrdvs
+[1713362512:8870] NOTICE:  Compiled with OpenSSL support
+[1713362512:8871] NOTICE:  Using non-SSL mode
+[1713362512:8871] NOTICE:  per-conn mem: 184 + 1328 headers + protocol rx buf
+---------------websocket openssl init
+[insert_wsi_socket_into_fds] wsi->sock=277
+
+###ws_callback reason[22]
+[1713362512:8877] NOTICE:  Listening on port 7681
+###ws_callback reason[20]
+
+[DVR_MAIN_SC_PROCESS][39][dvr_startup_sc_web_server_start] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][40][dvr_startup_sc_watchdog_task] start!!,time[1713362512]!!
+=====>total mem:[512 MB]
+----------------------->maCreateServer
+
+[DVR_MAIN_SC_PROCESS][40][dvr_startup_sc_watchdog_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][41][dvr_startup_sc_ipc_pnp_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][41][dvr_startup_sc_ipc_pnp_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][42][dvr_startup_sc_upnp_init] start!!,time[1713362512]!!
+sc_net_if_get_ipv4_addr ip 0 mask 0
+
+[DVR_MAIN_SC_PROCESS][42][dvr_startup_sc_upnp_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][43][dvr_startup_sc_poc_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][43][dvr_startup_sc_poc_init] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][44][dvr_startup_sc_ipc_passwd_sync_task] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][44][dvr_startup_sc_ipc_passwd_sync_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][45][dvr_startup_sc_record_sysinfo_task] start!!,time[1713362512]!!
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+
+[DVR_MAIN_SC_PROCESS][45][dvr_startup_sc_record_sysinfo_task] finish,iRet[0]!!,time[1713362512],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][46][dvr_startup_sc_firm_backup_init] start!!,time[1713362512]!!
+
+[DVR_MAIN_SC_PROCESS][46][dvr_startup_sc_firm_backup_init] finish,iRet[0]!!,time[1713362513],cost[1]s !!
+
+[DVR_MAIN_SC_PROCESS][47][dvr_startup_sc_image_param_by_timeseg] start!!,time[1713362513]!!
+----------------------->maCreateServer OK
+cs port[80]!
+
+[DVR_MAIN_SC_PROCESS][47][dvr_startup_sc_image_param_by_timeseg] finish,iRet[0]!!,time[1713362513],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][48][dvr_startup_sc_ptz_coaxial_init] start!!,time[1713362513]!!
+
+[DVR_MAIN_SC_PROCESS][48][dvr_startup_sc_ptz_coaxial_init] finish,iRet[0]!!,time[1713362513],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][49][dvr_startup_sc_gb28181_init] start!!,time[1713362513]!!
+
+[DVR_MAIN_SC_PROCESS][49][dvr_startup_sc_gb28181_init] finish,iRet[0]!!,time[1713362513],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][50][dvr_startup_sc_x86_ctrl_init] start!!,time[1713362513]!!
+
+[DVR_MAIN_SC_PROCESS][50][dvr_startup_sc_x86_ctrl_init] finish,iRet[0]!!,time[1713362513],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][51][dvr_startup_sc_supermind_init] start!!,time[1713362513]!!
+!!!!!!!!!!!!!!!sc_hicore is start ok time[1713362513]!!!!!!!!!!!!!!!!
+
+[DVR_MAIN_SC_PROCESS][51][dvr_startup_sc_supermind_init] finish,iRet[0]!!,time[1713362513],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][52][dvr_startup_sc_set_system_start_flag] start!!,time[1713362513]!!
+
+[DVR_MAIN_SC_PROCESS][52][dvr_startup_sc_set_system_start_flag] finish,iRet[0]!!,time[1713362513],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][53][dvr_startup_sc_savelog_init] start!!,time[1713362513]!!
+[INFO]:savelog.c[1412] cmd is: [0xb66acdcc]
+
+[INFO]:savelog.c[1423] FsInFlash[0],WriteFlag[1],DspProcess[0]
+
+[INFO]:savelog.c[1412] cmd is: [0xb66acdcc]
+
+[INFO]:savelog.c[1462] DEVICE IS READY
+
+
+[DVR_MAIN_SC_PROCESS][53][dvr_startup_sc_savelog_init] finish,iRet[0]!!,time[1713362513],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][54][dvr_startup_sc_send_panel_cmd] start!!,time[1713362513]!!
+======@@@@@=nui_abi_voicetalk_num() == [1]
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+
+[DVR_MAIN_SC_PROCESS][54][dvr_startup_sc_send_panel_cmd] finish,iRet[0]!!,time[1713362518],cost[5]s !!
+
+[DVR_MAIN_SC_PROCESS][55][dvr_startup_sc_shjf_adjust_manual_record] start!!,time[1713362518]!!
+
+[DVR_MAIN_SC_PROCESS][55][dvr_startup_sc_shjf_adjust_manual_record] finish,iRet[0]!!,time[1713362518],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][56][dvr_startup_sc_backup_module_init] start!!,time[1713362518]!!
+
+[DVR_MAIN_SC_PROCESS][56][dvr_startup_sc_backup_module_init] finish,iRet[0]!!,time[1713362518],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][57][show_get_hard_info] start!!,time[1713362518]!!
+
+
+getHardInfo:
+Start at 2024-04-17 14:01:45
+Serial NO :0420200421CCWRE35870348WCVU 
+V4.21.100 build 200307
+softBase:/Platform/trunk:0
+KernelVersion: V2.3.2 build 190902
+dspSoftVersion: V5.0 build 200116
+codecVersion: V5.0 build 200116
+hardwareVersion = 0x20e3920
+encodeChans = 4
+decodeChans = 4
+alarmInNums = 4
+alarmOutNums = 4
+abi_ipc_maxnum = 5
+abi_video_in_num = 4
+flashsize = 0x1
+ramSize = 0x20000000
+networksNums = 1
+language = 1
+devType:DS-7204HQHI-K1
+bootPartition = 1
+randomCode = IOCOYL
+operationCode = 
+biosVersion = 
+AP version: 0, date: 0-00-00
+LD version: 0, date: 0-00-00
+productlinever: V1.1.1
+#
+
+
+
+[DVR_MAIN_SC_PROCESS][57][show_get_hard_info] finish,iRet[0]!!,time[1713362518],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][58][dvr_startup_sc_control4_init] start!!,time[1713362518]!!
+
+[DVR_MAIN_SC_PROCESS][58][dvr_startup_sc_control4_init] finish,iRet[0]!!,time[1713362518],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][59][dvr_startup_sc_create_prio_queue] start!!,time[1713362518]!!
+>>>if_get_dev_bandwidth_param start
+sh: /tc: not found
+sh: /tc: not found
+sh: /tc: not found
+sh: /tc: not found
+sh: /tc: not found
+
+[DVR_MAIN_SC_PROCESS][59][dvr_startup_sc_create_prio_queue] finish,iRet[0]!!,time[1713362518],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][60][dvr_startup_sc_default_param_lib_init] start!!,time[1713362518]!!
+
+[DVR_MAIN_SC_PROCESS][60][dvr_startup_sc_default_param_lib_init] finish,iRet[0]!!,time[1713362518],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS][61][dvr_startup_sc_prev_schedule_cfg_update] start!!,time[1713362518]!!
+
+[DVR_MAIN_SC_PROCESS][61][dvr_startup_sc_prev_schedule_cfg_update] finish,iRet[0]!!,time[1713362518],cost[0]s !!
+
+[DVR_MAIN_SC_PROCESS]all func callback over!!, i[62],pFuncName[(nil)],pFuncCallback[(nil)]
+
+remove pppoed!
+[main:957]-->==================enablePPPoE failed!!!
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+net_zerocfg_run:start zeroconfig
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+

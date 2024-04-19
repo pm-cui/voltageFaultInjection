@@ -1,0 +1,55 @@
+sendPanelCommand start ... 
+
+ sendPanelCommand end ... 
+stime start 1713362832
+stime finish 1713362832
+********** sc_if_set_vout_cfg end *************
+********** gui_unlockwin_handle_msg_close 1 *************
+********** gui_unlockwin_handle_msg_close 2 *************
+DVR szFirmwareCode V2 [00000002000002000000000100000061000000050000000100000002ffffffff04150064001403070000ad23]
+[04-17 14:07:12][1][227]ezDevSDK_base_function send msg, module not inited
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+net_zerocfg_run:start zeroconfig
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+sc_net_if_get_ipv4_addr ip 0 mask 0
+
+===iScreenCout=4===
+fun:hisi_fill_4_screen_param, line:1745 window dispInfo[w:704, h:576], step(352, 288), last(352, 352)
+*******MSG_SHOWPAGE:16***********
+*******MSG_SHOWPAGE:0***********
+bmp size w [17] h [17]
+bmp size w [17] h [17]
+fun:hisi_fill_4_screen_param, line:1745 window dispInfo[w:1920, h:1080], step(960, 536), last(960, 960)
+fun:hisi_fill_4_screen_param, line:1745 window dispInfo[w:1920, h:1080], step(960, 536), last(960, 960)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+WHEN ENTERING PLAYBACK FEATURE:
+*************gui_playback_sidebar_channel_list_chan*************
+*******MSG_SHOWPAGE:0***********
+###playStopBegin-iVoChan[2], iWinNo[0xffffffff]###
+###playStopEnd-iWinNo[0xffffffff],rval[0]###
+
+*************gui_playback_sidebar_channel_list_chan*************
+*******MSG_SHOWPAGE:0***********
+###playStopBegin-iVoChan[2], iWinNo[0xffffffff]###
+###playStopEnd-iWinNo[0xffffffff],rval[0]###
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+WHEN ENTERING STORAGE:
+ gui_schedulewin_record_handle_msg_showpage sc_if_get_record_cfg end 
+ Adjust date/time from RTC.
+stime start 1713363135
+stime finish 1713363136
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE MANGEMENT, SMART ANALYSIS, CAMERA, SYSTEM AND MAINTAINENCE DO NOT GIVE ANY OUTPUT
+
+==== start to shutdown device ===== 
+
